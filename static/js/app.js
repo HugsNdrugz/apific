@@ -1,253 +1,155 @@
-// Initialize Feather icons
-feather.replace();
+// Initialize Feather icons when the document is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    feather.replace();
+    initializeApp();
+});
 
-// Base API URL
-const apiUrl = window.location.origin;
-
-// Function to refresh data
-async function refreshData() {
-    const currentSection = document.querySelector('.section.active').id;
-    showSection(currentSection);
-}
-
-// Fetch data with error handling
-async function fetchData(endpoint) {
-    try {
-        const response = await fetch(`${apiUrl}/api/${endpoint}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return await response.json();
-    } catch (error) {
-        console.error(`Error fetching ${endpoint}:`, error);
-        return null;
-    }
-}
-
-// Show data details
-async function showDetails(tableName, id) {
-    const data = await fetchData(`table/${tableName}/${id}`);
-    const chatWindow = document.querySelector('.chat-window');
-    
-    if (!data) {
-        return;
-    }
-
-    const header = document.createElement('div');
-    header.className = 'chat-header';
-    header.innerHTML = `
-        <button onclick="closeChatWindow()">
-            <i data-feather="arrow-left"></i>
-        </button>
-        <h3>${tableName} Details</h3>
-    `;
-
-    const content = document.createElement('div');
-    content.className = 'messages-container';
-    
-    Object.entries(data).forEach(([key, value]) => {
-        const item = document.createElement('div');
-        item.className = 'message-item';
-        item.innerHTML = `
-            <div class="message-content">
-                <strong>${key}:</strong> 
-                <span>${value}</span>
-            </div>
-        `;
-        content.appendChild(item);
+// Initialize app
+function initializeApp() {
+    // Setup navigation
+    document.querySelectorAll('.sidebar li').forEach(item => {
+        item.addEventListener('click', () => {
+            document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
+            item.classList.add('active');
+            showSection(item.dataset.section);
+        });
     });
 
-    chatWindow.innerHTML = '';
-    chatWindow.appendChild(header);
-    chatWindow.appendChild(content);
-    chatWindow.classList.remove('hidden');
-    
-    feather.replace();
-}
+    // Setup search
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(searchMessages, 300));
+    }
 
-// Close chat window
-function closeChatWindow() {
-    document.querySelector('.chat-window').classList.add('hidden');
-}
-
-// Close settings
-function closeSettings() {
+    // Load initial data
     showSection('chats');
 }
 
 // Show section
 function showSection(sectionId) {
+    // Hide all sections
     document.querySelectorAll('.section').forEach(section => {
         section.classList.add('hidden');
         section.classList.remove('active');
     });
     
-    document.getElementById(sectionId).classList.remove('hidden');
-    document.getElementById(sectionId).classList.add('active');
-    
-    closeChatWindow();
+    // Show selected section
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.classList.remove('hidden');
+        section.classList.add('active');
+    }
 
     // Load section specific data
+    loadSectionData(sectionId);
+}
+
+// Load section data
+async function loadSectionData(sectionId) {
     switch(sectionId) {
-        case 'marketplace':
-            loadTables();
-            break;
-        case 'requests':
-            loadRelations();
+        case 'calls':
+            await loadCalls();
             break;
         case 'archived':
-            loadArchived();
+            await loadArchived();
+            break;
+        case 'keylogs':
+            await loadKeylogs();
+            break;
+        case 'contacts':
+            await loadContacts();
             break;
         case 'chats':
-            loadRecords();
+            await loadChats();
             break;
     }
 }
 
-// Load tables
-async function loadTables() {
-    const tables = await fetchData('tables');
-    const container = document.querySelector('.marketplace-list');
-    container.innerHTML = '';
-    
-    if (tables && tables.length > 0) {
-        tables.forEach(table => {
-            const element = document.createElement('div');
-            element.className = 'marketplace-item';
-            element.innerHTML = `
-                <i data-feather="table"></i>
-                <div class="marketplace-details">
-                    <span class="name">${table.name}</span>
-                    <span class="preview">${table.count} records</span>
-                </div>
-            `;
-            element.addEventListener('click', () => loadTableDetails(table.name));
-            container.appendChild(element);
-        });
-        feather.replace();
-    } else {
-        const noTablesMessage = document.createElement('div');
-        noTablesMessage.textContent = 'No tables found';
-        container.appendChild(noTablesMessage);
-    }
+// Load calls
+async function loadCalls() {
+    const response = await fetch('/calls');
+    const data = await response.text();
+    document.getElementById('calls').innerHTML = data;
+    feather.replace();
 }
 
-// Load relations
-async function loadRelations() {
-    const relations = await fetchData('relations');
-    const container = document.querySelector('.request-list');
-    container.innerHTML = '';
-    
-    if (relations) {
-        Object.entries(relations).forEach(([table, keys]) => {
-            const element = document.createElement('div');
-            element.className = 'request-item';
-            element.innerHTML = `
-                <i data-feather="git-branch"></i>
-                <div class="request-details">
-                    <span class="name">${table}</span>
-                    <span class="message">Primary Key: ${keys.primary_key}</span>
-                    <span class="message">Foreign Keys: ${keys.foreign_keys.join(', ') || 'None'}</span>
-                </div>
-            `;
-            container.appendChild(element);
-        });
-        feather.replace();
-    } else {
-        const noRelationsMessage = document.createElement('div');
-        noRelationsMessage.textContent = 'No relations found';
-        container.appendChild(noRelationsMessage);
-    }
-}
-
-// Load archived data
+// Load archived
 async function loadArchived() {
-    const archived = await fetchData('archived');
-    const container = document.querySelector('.archived-list');
-    container.innerHTML = '';
-    
-    if (archived && archived.length > 0) {
-        archived.forEach(item => {
-            const element = document.createElement('div');
-            element.className = 'call-item';
-            element.innerHTML = `
-                <i data-feather="archive"></i>
-                <div class="call-details">
-                    <span class="name">${item.table}</span>
-                    <span class="message">${item.description}</span>
-                </div>
-            `;
-            container.appendChild(element);
-        });
-        feather.replace();
-    } else {
-        const noArchivedMessage = document.createElement('div');
-        noArchivedMessage.textContent = 'No archived data';
-        container.appendChild(noArchivedMessage);
-    }
+    const response = await fetch('/archived');
+    const data = await response.text();
+    document.getElementById('archived').innerHTML = data;
+    feather.replace();
 }
 
-// Load records
-async function loadRecords() {
-    const records = await fetchData('recent');
-    const container = document.querySelector('.chat-list');
-    container.innerHTML = '';
-    
-    if (records && records.length > 0) {
-        records.forEach(record => {
-            const element = document.createElement('div');
-            element.className = 'chat-item';
-            element.innerHTML = `
-                <i data-feather="file-text"></i>
-                <div class="chat-details">
-                    <span class="name">${record.table}</span>
-                    <span class="preview">ID: ${record.id}</span>
-                </div>
-                <span class="time">${record.timestamp}</span>
-            `;
-            element.addEventListener('click', () => showDetails(record.table, record.id));
-            container.appendChild(element);
-        });
-        feather.replace();
-    } else {
-        const noRecordsMessage = document.createElement('div');
-        noRecordsMessage.textContent = 'No recent records';
-        container.appendChild(noRecordsMessage);
-    }
+// Load keylogs
+async function loadKeylogs() {
+    const response = await fetch('/keylogs');
+    const data = await response.text();
+    document.getElementById('keylogs').innerHTML = data;
+    feather.replace();
 }
 
-// Setup search
-function setupSearch() {
-    const searchInput = document.getElementById('search');
-    searchInput.addEventListener('input', debounce(async (e) => {
-        const term = e.target.value.toLowerCase();
-        if (term.length < 2) return;
+// Load contacts
+async function loadContacts() {
+    const response = await fetch('/contacts');
+    const data = await response.text();
+    document.getElementById('contacts').innerHTML = data;
+    feather.replace();
+}
+
+// Load chats
+async function loadChats() {
+    const response = await fetch('/');
+    const data = await response.text();
+    document.getElementById('chats').innerHTML = data;
+    feather.replace();
+}
+
+// Search messages
+function searchMessages() {
+    const searchInput = document.getElementById('search-input');
+    const searchTerm = searchInput ? searchInput.value : '';
+    const resultsContainer = document.getElementById('search-results');
+    
+    if (!searchTerm || !resultsContainer) return;
+
+    fetch('/search', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `search_term=${encodeURIComponent(searchTerm)}`,
+    })
+    .then(response => response.json())
+    .then(results => {
+        resultsContainer.innerHTML = '';
         
-        const results = await fetchData(`search?term=${encodeURIComponent(term)}`);
-        const container = document.querySelector('.chat-list');
-        container.innerHTML = '';
-        
-        if (results && results.length > 0) {
-            results.forEach(result => {
-                const element = document.createElement('div');
-                element.className = 'chat-item';
-                element.innerHTML = `
-                    <i data-feather="search"></i>
-                    <div class="chat-details">
-                        <span class="name">${result.table}</span>
-                        <span class="preview">${result.match}</span>
-                    </div>
-                `;
-                element.addEventListener('click', () => showDetails(result.table, result.id));
-                container.appendChild(element);
-            });
-            feather.replace();
-        } else {
-            const noResultsMessage = document.createElement('div');
-            noResultsMessage.textContent = 'No results found';
-            container.appendChild(noResultsMessage);
+        if (results.error) {
+            resultsContainer.innerHTML = `<p>${results.error}</p>`;
+            return;
         }
-    }, 300));
+
+        if (results.length === 0) {
+            resultsContainer.innerHTML = '<p>No results found.</p>';
+            return;
+        }
+
+        const ul = document.createElement('ul');
+        results.forEach(result => {
+            const li = document.createElement('li');
+            const messageType = result.type.charAt(0).toUpperCase() + result.type.slice(1);
+            li.innerHTML = `
+                <p><strong>${messageType}: ${result.name}</strong> - ${result.text}</p>
+                <small>${result.time}</small>
+            `;
+            ul.appendChild(li);
+        });
+        resultsContainer.appendChild(ul);
+    })
+    .catch(error => {
+        resultsContainer.innerHTML = `<p>Error: ${error.message}</p>`;
+        console.error('Search error:', error);
+    });
 }
 
 // Debounce function
@@ -262,21 +164,3 @@ function debounce(func, wait) {
         timeout = setTimeout(later, wait);
     };
 }
-
-// Initialize app
-function initializeApp() {
-    // Setup navigation
-    document.querySelectorAll('.sidebar li').forEach(item => {
-        item.addEventListener('click', () => {
-            document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
-            item.classList.add('active');
-            showSection(item.dataset.section);
-        });
-    });
-
-    setupSearch();
-    loadRecords(); // Load initial data
-}
-
-// Start the app when DOM is loaded
-document.addEventListener('DOMContentLoaded', initializeApp);

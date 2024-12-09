@@ -1,0 +1,228 @@
+body {
+	font-family: sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #000; /* Messenger background color */
+	color: #fff; /* Messenger text color */
+	display: flex; /* Use flexbox for overall layout */
+	height: 100vh;
+}
+
+.container {
+	max-width: 800px; /* Adjust as needed */
+	margin: 20px auto;
+	padding: 20px;
+	background-color: #1C2B33;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	width: 75%;
+
+}
+
+h1 {
+	color: #fff;  /* Messenger Blue */
+	text-align: center;
+	margin-top: 5px;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+}
+
+th, td {
+	padding: 10px;
+	text-align: left;
+	border-bottom: 1px solid #ddd;
+}
+
+th {
+	background-color: #f5f5f5;
+}
+
+.message-list {
+	list-style: none;
+	padding: 0;
+}
+
+.message {
+	margin-bottom: 10px;
+	padding: 10px;
+	border-radius: 18px;
+	max-width: 70%; /* Adjust as needed */
+	clear: both;
+}
+
+.incoming {
+	background-color: #f0f0f0;
+	float: left;
+}
+
+.outgoing {
+	background-color: #09f;
+	color: white;
+	float: right;
+}
+
+.message-text {
+	margin: 0; /* remove default paragraph margin */
+
+}
+
+.message-time {
+	font-size: 0.8em;
+	color: #666;
+	display: block;
+	margin-top: 5px;
+	text-align: right;
+}
+.sidebar {
+	background-color: #191919;
+	width: 60px; /* Adjust width as needed */
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.sidebar-button {
+	background: none;
+	border: none;
+	padding: 10px;
+	cursor: pointer;
+}
+
+.sidebar-button img {
+	width: 24px; /* Adjust size as needed */
+	height: 24px; /* Adjust size as needed */
+}
+
+.profile-pic-container {
+	position: absolute;
+	bottom: 10px;
+	width: 100%;
+	text-align: center;
+}
+
+.profile-pic {
+	width: 40px; /* Adjust size as needed */
+	height: 40px; /* Adjust size as needed */
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.container {
+	max-width: 800px;
+	margin: 20px auto;
+	padding: 20px;
+	background-color: #1f1f1f;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	width: 75%;
+	color: #fff;
+}
+#search-input {
+	width: 93%; /* Make search input fill container width */
+	padding: 10px;
+	margin: 10px 0;
+	border: 1px solid #666;
+	border-radius: 8px;
+	font-size: 1em;
+	background-color: #333; /* Dark background for input */
+	color: #fff; /* Light text color */
+}
+
+#search-results {
+	margin-top: 20px;
+	color: #ddd; /* Light text for results */
+}
+
+#search-results ul {
+	list-style: none;
+	padding: 0;
+}
+
+#search-results li {
+	background-color: #283943; /* Slightly lighter than main container */
+	padding: 10px;
+	margin-bottom: 5px;
+	border-radius: 8px;
+}
+
+#search-results li strong {
+	color: #09f; /* Highlight names in blue */
+}
+
+#search-results li .message-text {
+	color: #fff; /* White text for messages */
+}
+
+#search-results li .message-time {
+	font-size: 0.8em;
+	color: #999; /* Light grey for timestamps */
+	display: block;
+	margin-top: 5px;
+}
+
+/* Style for the header within chat */
+.chat-header {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.back-button {
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	margin-right: 15px; /* Spacing between button and name */
+}
+
+.back-button img {
+	width: 20px; /* Adjust size as needed */
+	height: 20px; /* Adjust size as needed */
+}
+
+.chat-header h1 {
+	margin: 0;
+	font-size: 1.2em;
+	color: #fff; /* Or any color that fits your design */
+}
+/* Style for the call button */
+.call-button {
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	margin-left: auto; /* This pushes the button to the right */
+}
+
+.call-button img {
+	width: 24px; /* Adjust size as needed */
+	height: 24px; /* Adjust size as needed */
+}
+.menu-button {
+	display: block; /* Make buttons stack vertically */
+	width: 100%; /* Full width */
+	padding: 10px;
+	margin-bottom: 10px;
+	background-color: #444; /* Dark gray background */
+	color: white;
+	text-decoration: none;
+	border: none; /* Remove border */
+	border-radius: 6px;
+	text-align: center;
+	font-size: 1em; /* Adjust font size as needed */
+	cursor: pointer; /* Make cursor a pointer */
+	transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.menu-button:hover {
+	background-color: #555; /* Slightly lighter color on hover */
+}
+
+.menu-button:active {
+	background-color: #666; /* Slightly darker color on click */
+}

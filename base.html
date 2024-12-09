@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{% block title %}{% endblock %}</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='cyf8QhNEWE-MbVu6J6TSgCzupAm9R8u1G.css') }}">
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+		<script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+		<div class="sidebar">
+				<button class="sidebar-button" onclick="location.href='/'">
+						<img src="{{ url_for('static', filename='images/messenger-icon.png') }}" alt="Chats Icon">
+				</button>
+				<a href="{{ url_for('calls') }}" class="sidebar-button">
+						<img src="{{ url_for('static', filename='images/call-icon.png') }}" alt="Calls Icon">
+				</a>
+				<a href="#" class="sidebar-button">
+						<img src="{{ url_for('static', filename='images/marketplace-icon.png') }}" alt="Marketplace Icon">
+				</a>
+				<a href="#" class="sidebar-button">
+						<img src="{{ url_for('static', filename='images/archive-icon.png') }}" alt="Archive Icon">
+				</a>
+
+
+				<!-- Profile Picture -->
+				<div class="profile-pic-container">
+						<img src="https://static.xx.fbcdn.net/rsrc.php/v3/yL/r/J5WuQy7W1qj.png" alt="Profile Picture" class="profile-pic">
+				</div>
+		</div>
+
+		<div class="main-content">
+				{% block content %}
+				{% endblock %}
+		</div>
+</body>
+</html>

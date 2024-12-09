@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Keylogs</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='cyf8QhNEWE-MbVu6J6TSgCzupAm9R8u1G.css') }}">
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+		<div class="container">
+				<h1>Keylogs</h1>
+				<table>
+						<thead>
+								<tr>
+										<th>ID</th>
+										<th>Application</th>
+										<th>Time</th>
+										<th>Text</th>
+								</tr>
+						</thead>
+						<tbody>
+								{% for keylog in keylogs %}
+										<tr>
+												<td>{{ keylog.keylog_id }}</td>
+												<td>{{ keylog.application }}</td>
+												<td>{{ keylog.time }}</td>
+												<td>{{ keylog.text }}</td>
+										</tr>
+								{% endfor %}
+						</tbody>
+				</table>
+		</div>
+</body>
+</html>
