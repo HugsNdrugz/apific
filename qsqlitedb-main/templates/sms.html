@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>SMS with {{ name }}</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='cyf8QhNEWE-MbVu6J6TSgCzupAm9R8u1G.css') }}">
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+		<div class="container">
+				<h1>SMS with {{ name }}</h1>
+				<ul class="message-list">
+						{% for sms in sms_messages %}
+						<li class="message {% if sms.sms_type == 'sent' %}outgoing{% else %}incoming{% endif %}">
+							 <p class="message-text">{{ sms.text }}</p>
+							 <span class="message-time">{{ sms.time }}</span>
+						</li>
+						{% endfor %}
+				</ul>
+		</div>
+</body>
+
+</html>

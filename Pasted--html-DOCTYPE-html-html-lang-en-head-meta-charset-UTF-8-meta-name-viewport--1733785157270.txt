@@ -1,0 +1,676 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messenger Interface</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="icons/messenger.png" alt="Messenger Logo" class="messenger-logo">
+        <ul>
+            <li data-section="chats" class="active">
+                <i data-feather="message-square"></i>
+            </li>
+            <li data-section="marketplace">
+                <i data-feather="shopping-bag"></i>
+            </li>
+            <li data-section="requests">
+                <i data-feather="user-plus"></i>
+            </li>
+            <li data-section="archived">
+                <i data-feather="archive"></i>
+            </li>
+        </ul>
+        <ul class="bottom-menu">
+            <li data-section="settings">
+                <img src="https://via.placeholder.com/50" alt="Profile" id="profile-icon" class="profile-icon">
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div id="chats" class="section active">
+            <div class="top-bar">
+                <h1>Chats</h1>
+                <div class="right-icons">
+                    <i data-feather="edit"></i>
+                </div>
+            </div>
+            <input type="text" id="search" placeholder="Search Messenger">
+            <div class="chat-list"></div>
+        </div>
+        <div id="requests" class="section hidden">
+            <div class="top-bar">
+                <h1>Requests</h1>
+                <div class="right-icons">
+                    <i data-feather="edit"></i>
+                </div>
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-button active" onclick="filterRequests('You may know')">You may know</button>
+                <button class="filter-button" onclick="filterRequests('Spam')">Spam</button>
+
+            </div>
+            <div class="request-list"></div>
+        </div>
+
+        <div id="archived" class="section hidden">
+            <div class="top-bar">
+                <h1>Archived chats</h1>
+            </div>
+            <div class="archived-list"></div>
+        </div>
+        <div id="marketplace" class="section hidden">
+            <div class="top-bar">
+                <h1>Marketplace</h1>
+            </div>
+            <div class="marketplace-list"></div>
+        </div>
+        <div id="settings" class="section hidden">
+            <div class="top-bar">
+                <h1>Chats</h1>
+                <div class="right-icons">
+                    <i data-feather="x" onclick="closeSettings()"></i>
+                </div>
+            </div>
+            <div class="settings-content" id="settings-content"></div>
+        </div>
+
+        <div class="chat-window hidden">
+
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+```
+
+```javascript
+// Initialize Feather icons
+feather.replace();
+
+// Base API URL
+const apiUrl = window.location.origin; // Use relative URL for portability
+
+// Function to fetch data from the API
+async function fetchData(endpoint) {
+    try {
+        const response = await fetch(`${apiUrl}/${endpoint}`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch ${endpoint}: ${response.status} ${response.statusText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+        // Return an empty array or an appropriate default value in case of errors
+        return [];
+    }
+}
+
+// Function to populate the chat list
+async function populateContacts() {
+    const contacts = await fetchData('contacts');
+    const listElement = document.querySelector('#chats .chat-list');
+
+    // Clear previous chat list content
+    listElement.innerHTML = '';
+
+    if (contacts && contacts.length > 0) {
+        contacts.forEach(contact => {
+            const contactItem = createContactItem(contact);
+            listElement.appendChild(contactItem);
+        });
+    } else {
+        // Display a message if no contacts are found
+        const noContactsMessage = document.createElement('div');
+        noContactsMessage.textContent = 'No contacts found.';
+        listElement.appendChild(noContactsMessage);
+    }
+}
+
+// Function to create chat list item
+function createContactItem(contact) {
+    const contactItem = document.createElement('div');
+    contactItem.classList.add('chat-item');
+    const lastMessage = contact.messages && contact.messages.length > 0 ? contact.messages[contact.messages.length - 1] : { text: "", time: "" };
+    contactItem.innerHTML = `
+        <img src="${contact.avatar || 'https://via.placeholder.com/50'}" alt="${contact.name}'s Avatar">
+        <div class="chat-details">
+            <span class="name">${contact.name}</span>
+            <span class="preview">${lastMessage.text}</span>
+        </div>
+        <span class="time">${lastMessage.time}</span>
+        ${contact.unread ? '<div class="unread-indicator"></div>' : ''}
+    `;
+    contactItem.addEventListener('click', () => showMessages(contact.name));
+    return contactItem;
+}
+
+async function showMessages(contactName) {
+    const messages = await fetchData(`sms/${contactName}`);
+    const chatWindow = document.querySelector('.chat-window');
+    chatWindow.classList.remove('hidden');
+
+    // Fetch updated contact information (including avatar)
+    const contacts = await fetchData('contacts');
+    const contact = contacts.find(c => c.name === contactName);
+
+    const header = document.createElement('div');
+    header.className = 'chat-header';
+    header.innerHTML = `
+        <button class="btn btn-link" onclick="closeChatWindow()">
+            <i data-feather="arrow-left"></i>
+        </button>
+        <img src="${contact.avatar || 'https://via.placeholder.com/50'}" alt="${contactName}'s Avatar" class="avatar">
+        <div class="user-info">
+            <h4 class="mb-0 ms-3">${contactName}</h4>
+            <p class="mb-0 ms-3">Active...</p>
+        </div>
+        <div class="chat-actions">
+            <i data-feather="phone"></i>
+            <i data-feather="video"></i>
+            <i data-feather="more-horizontal"></i>
+        </div>
+    `;
+
+    const messagesContainer = document.createElement('div');
+    messagesContainer.className = 'messages-container';
+
+    if (messages && messages.length > 0) {
+        messages.forEach(msg => {
+            const messageElement = createMessageItem(msg, contactName);
+            messagesContainer.appendChild(messageElement);
+        });
+    } else {
+        const noMessagesMessage = document.createElement('div');
+        noMessagesMessage.textContent = 'No messages found.';
+        messagesContainer.appendChild(noMessagesMessage);
+    }
+
+    chatWindow.innerHTML = '';
+    chatWindow.appendChild(header);
+    chatWindow.appendChild(messagesContainer);
+    feather.replace(); // Re-initialize Feather icons
+}
+
+function createMessageItem(msg, contactName) {
+    const messageElement = document.createElement('div');
+    messageElement.className = `message-item ${msg.sender === 'user' ? 'user-message' : 'contact-message'}`;
+    messageElement.innerHTML = `
+        <div class="message-content">
+                ${msg.sender !== 'user' ? `<img src="https://via.placeholder.com/50" alt="${contactName}'s Avatar" class="avatar-message">` : ''}
+            <p class="message-text">${msg.text}</p>
+        </div>
+        <span class="message-time">${msg.time}</span>
+    `;
+    return messageElement;
+}
+
+
+
+async function showCallHistory() {
+    const calls = await fetchData('calls');
+    const listElement = document.querySelector('#archived .archived-list');
+
+    listElement.innerHTML = ''; // Clear the list first
+
+    if (calls.length === 0) {
+        // Display a "no archived chats" message if the list is empty
+        const emptyMessage = document.createElement('p');
+        emptyMessage.textContent = 'No archived chats';
+        listElement.appendChild(emptyMessage);
+    } else {
+        calls.forEach(call => {
+            const callItem = document.createElement('div');
+            callItem.className = 'call-item';
+            callItem.innerHTML = `
+                <img src="${call.avatar || 'https://via.placeholder.com/50'}" alt="Avatar">
+                <div class="call-details">
+                    <span class="name">${call.name}</span>
+                    <span class="time">You are now connected on Messenger ${call.time}</span>
+                </div>
+            `;
+            listElement.appendChild(callItem);
+        });
+    }
+    feather.replace();
+}
+
+// Function to populate settings
+async function populateSettings() {
+    const settings = await fetchData('settings');
+    const settingsContainer = document.getElementById('settings-content');
+
+    if (settings) {
+        settingsContainer.innerHTML = `
+            <div class="account-info">
+                <img src="${settings.account.avatar || 'https://via.placeholder.com/100'}" alt="Profile Picture" class="profile-picture">
+                <div class="user-details">
+                    <h3>${settings.account.name}</h3>
+                    <p class="profile-link">See your profile</p>
+                </div>
+            </div>
+            <div class="setting-option">
+                <i data-feather="toggle-left" class="setting-icon"></i>
+                <div class="setting-text">
+                    <h4>Active Status: ON</h4>
+                </div>
+            </div>
+            <div class="notifications">
+                <h2>Notifications</h2>
+                <div class="setting-option">
+                    <i data-feather="volume-2" class="setting-icon"></i>
+                    <div class="setting-text">
+                        <h4>Notification sounds</h4>
+                        <p>Use sounds to notify you about incoming messages, calls, video chats, and in-app sounds.</p>
+                    </div>
+                    <input class="form-check-input" type="checkbox" id="notificationSounds" ${settings.notifications.notificationSounds ? 'checked' : ''}>
+                </div>
+                <div class="setting-option">
+                    <i data-feather="volume-x" class="setting-icon"></i>
+                    <div class="setting-text">
+                        <h4>Do Not Disturb</h4>
+                        <p>Mute notifications for a specific period of time.</p>
+                    </div>
+                    <input class="form-check-input" type="checkbox" id="doNotDisturb" ${settings.notifications.doNotDisturb ? 'checked' : ''}>
+                </div>
+            </div>
+            <div class="dark-mode">
+                <h2>Dark Mode</h2>
+                <p>Adjust the appearance of Messenger to reduce glare and give your eyes a break.</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="darkMode" id="darkModeOff" ${settings.darkMode === 'off' ? 'checked' : ''}>
+                    <label class="form-check-label" for="darkModeOff">Off</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="darkMode" id="darkModeOn" ${settings.darkMode === 'on' ? 'checked' : ''}>
+                    <label class="form-check-label" for="darkModeOn">On</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="darkMode" id="darkModeAutomatic" ${settings.darkMode === 'automatic' ? 'checked' : ''}>
+                    <label class="form-check-label" for="darkModeAutomatic">Automatic</label>
+                </div>
+            </div>
+            <div class="setting-option">
+                <i data-feather="credit-card" class="setting-icon"></i>
+                <div class="setting-text">
+                    <h4>Manage payments</h4>
+                </div>
+            </div>
+        `;
+    } else {
+        settingsContainer.innerHTML = '<p>Failed to load settings.</p>'; // Error message
+    }
+
+    feather.replace();
+}
+
+async function populateMarketplace() {
+    const marketplaceItems = await fetchData('marketplace');
+    const listElement = document.querySelector('#marketplace .marketplace-list');
+    listElement.innerHTML = ''; // Clear previous content
+
+    if (marketplaceItems && marketplaceItems.length > 0) {
+        marketplaceItems.forEach(item => {
+            const marketplaceItem = document.createElement('div');
+            marketplaceItem.className = 'marketplace-item';
+            marketplaceItem.innerHTML = `
+                <img src="${item.image || 'https://via.placeholder.com/50'}" alt="${item.title}'s Image">
+                <div class="marketplace-details">
+                    <span class="title">${item.title}</span>
+                    <span class="seller">${item.seller}</span>
+                    <span class="time">${item.time}</span>
+                </div>
+                ${item.unread ? '<div class="unread-indicator"></div>' : ''}
+            `;
+            listElement.appendChild(marketplaceItem);
+        });
+    } else {
+        const noItemsMessage = document.createElement('div');
+        noItemsMessage.textContent = 'No marketplace items found.';
+        listElement.appendChild(noItemsMessage);
+    }
+    feather.replace();
+}
+
+// Function to populate requests
+async function populateRequests(filter) {
+    const requests = await fetchData('requests');
+    const listElement = document.querySelector('#requests .request-list');
+
+    listElement.innerHTML = ''; // Clear the list first
+
+    // Filter requests based on the selected filter
+    const filteredRequests = filter ? requests.filter(req => req.filter === filter) : requests;
+
+    if (filteredRequests.length === 0) {
+        const emptyMessage = document.createElement('p');
+        emptyMessage.textContent = 'No requests found';
+        listElement.appendChild(emptyMessage);
+    } else {
+        filteredRequests.forEach(request => {
+            const requestItem = document.createElement('div');
+            requestItem.className = 'request-item';
+            requestItem.innerHTML = `
+                <img src="${request.avatar || 'https://via.placeholder.com/50'}" alt="${request.name}'s Avatar">
+                <div class="request-details">
+                    <span class="name">${request.name}</span>
+                    <span class="message">${request.message}</span>
+                    <span class="time">${request.time}</span>
+                </div>
+            `;
+            listElement.appendChild(requestItem);
+        });
+    }
+    feather.replace();
+}
+
+// Function to handle filtering requests
+function filterRequests(filter) {
+    populateRequests(filter);
+    const filterButtons = document.querySelectorAll('.filter-button');
+    filterButtons.forEach(button => button.classList.remove('active'));
+    const selectedButton = document.querySelector(`.filter-button:nth-child(${filter === 'You may know' ? 1 : 2})`);
+    selectedButton.classList.add('active');
+}
+
+
+
+
+// Function to show a specific section
+function showSection(sectionId) {
+    // Hide the chat window if it's open
+    const chatWindow = document.querySelector('.chat-window');
+    chatWindow.classList.add('hidden');
+
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => section.classList.add('hidden'));
+    document.getElementById(sectionId).classList.remove('hidden');
+    document.getElementById(sectionId).classList.add('active');
+
+    if (sectionId === 'chats') {
+        populateContacts();
+    } else if (sectionId === 'archived') {
+        showCallHistory();
+    } else if (sectionId === 'settings') {
+        populateSettings();
+    } else if (sectionId === 'marketplace') {
+        populateMarketplace();
+    } else if (sectionId === 'requests') {
+        // Initial population of requests with no filter
+        populateRequests();
+    }
+}
+
+// Setup sidebar navigation
+function setupSidebar() {
+    const sidebarItems = document.querySelectorAll('.sidebar li');
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', () => {
+            // Remove 'active' class from all sidebar items
+            sidebarItems.forEach(i => i.classList.remove('active'));
+
+            const sectionId = item.dataset.section;
+            showSection(sectionId);
+
+            // Add 'active' class to the clicked sidebar item
+            item.classList.add('active');
+        });
+    });
+}
+
+// Close chat window
+function closeChatWindow() {
+    const chatWindow = document.querySelector('.chat-window');
+    chatWindow.classList.add('hidden');
+}
+
+// Close settings
+function closeSettings() {
+    showSection('chats');
+}
+
+async function setupSearch() {
+    const searchInput = document.getElementById('search');
+    searchInput.addEventListener('input', debounce(async () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        const chatList = document.querySelector('#chats .chat-list');
+        chatList.innerHTML = ''; // Clear previous search results
+        if (searchTerm.trim() === '') {
+            populateContacts(); // If search term is empty, show all contacts
+            return;
+        }
+
+        try {
+            const response = await fetch(`${apiUrl}/search?term=${searchTerm}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch search results: ${response.status} ${response.statusText}`);
+            }
+            const searchData = await response.json();
+
+            if ((searchData.contacts && searchData.contacts.length > 0) || (searchData.messages && searchData.messages.length > 0)) {
+                if (searchData.contacts && searchData.contacts.length > 0) {
+                    searchData.contacts.forEach(contact => {
+                        const contactItem = createContactItem(contact);
+                        chatList.appendChild(contactItem);
+                    });
+                }
+
+                if (searchData.messages && searchData.messages.length > 0) {
+                    searchData.messages.forEach(message => {
+                        const messageItem = createSearchMessageItem(message);
+                        chatList.appendChild(messageItem);
+                    });
+                }
+            } else {
+                const noResultsMessage = document.createElement('div');
+                noResultsMessage.textContent = 'No results found.';
+                chatList.appendChild(noResultsMessage);
+            }
+
+            feather.replace();
+        } catch (error) {
+            console.error('Error during search:', error);
+            const errorMessage = document.createElement('div');
+            errorMessage.textContent = 'Error during search. Please try again later.';
+            chatList.appendChild(errorMessage);
+        }
+    }, 300)); // Debounce with 300ms delay
+}
+
+function createSearchMessageItem(message) {
+    const messageItem = document.createElement('div');
+    messageItem.className = 'search-message-item';
+    messageItem.innerHTML = `
+        <img src="${message.avatar || 'https://via.placeholder.com/50'}" alt="Avatar">
+        <div class="message-details">
+            <span class="sender">${message.sender}</span>
+            <span class="content">${message.text}</span>
+        </div>
+        <span class="time">${message.time}</span>
+    `;
+
+    messageItem.addEventListener('click', () => {
+        // Handle clicking on a message in search results
+        // Find the contact associated with the message
+        fetchData('contacts').then(contacts => {
+            const contact = contacts.find(c => c.name === message.sender);
+            if (contact) {
+                showMessages(contact.name);
+                closeChatWindow();
+                showMessages(message.sender); // Directly show the message thread
+
+            } else {
+                console.error('Contact not found for message:', message);
+            }
+        });
+    });
+    return messageItem;
+}
+
+
+
+// Debounce function to limit API calls during search
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(this, args);
+        }, wait);
+    };
+}
+
+
+
+// Initialize the app
+async function initializeApp() {
+    setupSidebar();
+    setupSearch();
+    await populateContacts(); // Populate contacts on initial load
+    const profileIcon = document.getElementById('profile-icon');
+    try {
+        const settings = await fetchData('settings');
+        if (settings) {
+            profileIcon.src = settings.account.avatar || 'https://via.placeholder.com/50';
+        } else {
+            console.error("Failed to load user settings for profile icon.");
+        }
+    } catch (error) {
+        console.error("Error fetching settings:", error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initializeApp);
+```
+
+```python
+import os
+from flask import Flask, render_template, jsonify, request
+from db import db  # Import db from db.py
+
+app = Flask(__name__)
+
+# ... (database configuration as before)
+
+# Sample data (replace with your actual database queries)
+CONTACTS = [
+    {"name": "Samuel Diamond", "avatar": "images/user1.jpg", "lastMessage": {"text": "How ya guys doing", "time": "2h"}, "unread": false},
+    {"name": "Nigel Jackson", "avatar": "images/user2.jpg", "lastMessage": {"text": "Hey buddy", "time": "10h"}, "unread": false},
+    # ... more contacts
+]
+
+REQUESTS = [
+    {"title": "Ben Seegmiller", "avatar": "images/user.png", "message": "Message unavailable", "time": "3y", "filter": "You may know"},
+    # ... more requests
+]
+MARKETPLACE = [
+    {"title": "Austin • 2 Beds 1 Bath • Apartments for rent", "image": "images/property.jpg", "seller": "Rachel sold 2 Beds 1 Bath", "time": "5w", "unread": false},
+    {"title": "Austin • 1 Bed 1 Bath • Apartments for rent", "image": "images/apartment.jpg", "seller": "Mike is waiting for your response", "time": "5w", "unread": true},
+
+]
+SETTINGS = {
+    "account": {"name": "Austin Clayton", "avatar": "images/profile.jpg"},
+    "activeStatus": true,
+    "notifications": {"notificationSounds": true, "doNotDisturb": false},
+    "darkMode": "on"  # Or "off" or "automatic"
+}
+
+CALLS = [
+    {"name": "Robert Strang", "avatar": "images/user3.jpg", "time": "6w"},
+    {"name": "Todd Cole", "avatar": "images/user4.jpg", "time": "9w"},
+]
+
+MESSAGES = {
+    "Samuel Diamond": [
+        {"sender": "contact", "text": "Did you knock?", "time": "Sep 12, 2024, 1:10 AM"},
+        # ... other messages
+        {"sender": "user", "text": "Hey Sam, where's your live Trap?", "time": "8:43 AM"},
+
+        {"sender": "user", "text": "Hey are you ready", "time": "6:22 PM"},
+        {"sender": "user", "text": "How ya guys doing", "time": "6:22 PM"},
+        {"sender": "user", "text": "i gotta catch that nigga cat", "time": "Oct 25, 2024, 6:08 AM"},
+        {"sender": "call", "text": "Audio call", "time": "6:08 AM"},
+        {"sender": "call", "text": "Audio call", "time": "6:14 AM"},
+        {"sender": "call", "text": "Audio call", "time": "2:10 PM"},
+        {"sender": "user", "text": "hey", "time": "Nov 16, 2024, 2:00 AM"},
+        {"sender": "call", "text": "Missed audio call", "time": "8:19 PM"},
+
+        {"sender": "user", "text": "What's up man", "time": "Jul 16, 2024, 8:04 PM"},
+        {"sender": "user", "text": "Ok got to handle thank you though", "time": "8:04 PM"},
+        {"sender": "user", "text": "Welcome", "time": "8:04 PM"},
+        {"sender": "call", "text": "Audio call", "time": "5:24 PM"},
+        {"sender": "call", "text": "Audio call", "time": "6:51 AM"},
+        {"sender": "user", "text": "Hey, what are you doing?", "time": "Apr 27, 2024, 9:29 AM"},
+        {"sender": "user", "text": "Sleeping", "time": "9:29 AM"},
+        {"sender": "user", "text": "Oh, sorry, I just seen if you would possibly be able to grab me from gilberto's to my house because it's started raining after I walked here but if you're sleeping you can get back to sleep bro", "time": "9:29 AM"},
+        {"sender": "call", "text": "Audio call - 33 seconds", "time": "Jun 9, 2024, 5:18 PM"},
+        {"sender": "call", "text": "Missed audio call", "time": "Jul 16, 2024, 5:24 PM"},
+
+    ],
+    # ... messages for other contacts
+}
+
+@app.route('/contacts')
+def get_contacts():
+    return jsonify(CONTACTS)
+
+@app.route('/requests')
+def get_requests():
+
+    filter = request.args.get('filter')
+    if filter:
+        filtered_requests = [req for req in REQUESTS if req.get('filter') == filter]
+        return jsonify(filtered_requests)
+
+    return jsonify(REQUESTS)
+
+@app.route('/marketplace')
+def get_marketplace():
+    return jsonify(MARKETPLACE)
+
+
+
+@app.route('/settings')
+def get_settings():
+    return jsonify(SETTINGS)
+
+@app.route('/calls')
+def get_calls():
+    return jsonify(CALLS)
+
+@app.route('/sms/<contact_name>')
+def get_sms(contact_name):
+    messages = MESSAGES.get(contact_name, [])
+    return jsonify(messages)
+
+@app.route('/search')
+def search():
+    term = request.args.get('term')
+
+    if term:
+        results = {
+            'contacts': [contact for contact in CONTACTS if term in contact['name'].lower()],
+            'messages': []
+        }
+
+        for contact_name, messages in MESSAGES.items():
+            for message in messages:
+                if term in message['text'].lower():
+                    results['messages'].append({'sender': contact_name, 'text': message['text'], 'time': message['time'], 'avatar': next((c['avatar'] for c in CONTACTS if c['name'] == contact_name), None)})
+
+        return jsonify(results)
+    return jsonify({'contacts': [], 'messages': []})
+
+
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
+
+```

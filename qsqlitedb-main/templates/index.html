@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Chats{% endblock %}
+
+{% block content %}
+		<div class="container">
+				<h1>Chats</h1>
+
+				<input type="text" id="search-input" placeholder="Search Messenger" onkeyup="searchMessages()">
+				<div id="search-results"></div>
+
+				<ul id="conversation-list">
+						{% for contact in contacts %}
+								<li>
+										<a href="{{ url_for('chat', contact_name=contact['name']) }}">
+										<img src="{{ url_for('static', filename='images/placeholder.png') }}" alt="Profile Picture" class="profile-pic-small">
+										{{ contact['name'] }}
+										<span class="message-snippet">
+										{% if contact['last_message'] %}
+										- {{ contact['last_message']|truncate(30) }}
+										{% endif %}
+										</span>
+										</a>
+										<span class="timestamp">{% if contact.get('time') %}{{ contact['time'] }}{% endif %}</span>
+								</li>
+						{% endfor %}
+				</ul>
+		</div>
+{% endblock %}

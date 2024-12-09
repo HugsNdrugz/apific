@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Installed Apps</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='cyf8QhNEWE-MbVu6J6TSgCzupAm9R8u1G.css') }}">
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+		<div class="container">
+				<h1>Installed Apps</h1>
+				<table>
+						<thead>
+								<tr>
+										<th>ID</th>
+										<th>Application Name</th>
+										<th>Package Name</th>
+										<th>Install Date</th>
+								</tr>
+						</thead>
+						<tbody>
+								{% for app in installed_apps %}
+										<tr>
+												<td>{{ app.app_id }}</td>
+												<td>{{ app.application_name }}</td>
+												<td>{{ app.package_name }}</td>
+												<td>{{ app.install_date }}</td>
+										</tr>
+								{% endfor %}
+						</tbody>
+				</table>
+		</div>
+</body>
+</html>

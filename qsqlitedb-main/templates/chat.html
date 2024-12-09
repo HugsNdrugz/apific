@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with {{ name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='cyf8QhNEWE-MbVu6J6TSgCzupAm9R8u1G.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="chat-header">
+            <button onclick="window.location.href='/'" class="back-button">
+                <img src="https://static.xx.fbcdn.net/rsrc.php/v3/yH/r/VO7x7vOd441.png" alt="Back">
+            </button>            
+            <h1>{{ name }}</h1>
+            <button class="call-button">
+                <img src="https://static.xx.fbcdn.net/rsrc.php/v3/yJ/r/tPxR_kv7TqC.png" alt="Call">
+            </button>
+        </div>
+        <ul class="message-list">
+            {% for message in messages %}
+            <li class="message {% if message.sender == 'You' %}outgoing{% else %}incoming{% endif %}">
+                <p class="message-text">{{ message.text }}</p>
+                <span class="message-time">{{ message.time }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
