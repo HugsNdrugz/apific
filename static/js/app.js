@@ -4,6 +4,12 @@ feather.replace();
 // Base API URL
 const apiUrl = window.location.origin;
 
+// Function to refresh data
+async function refreshData() {
+    const currentSection = document.querySelector('.section.active').id;
+    showSection(currentSection);
+}
+
 // Fetch data with error handling
 async function fetchData(endpoint) {
     try {
@@ -64,6 +70,11 @@ function closeChatWindow() {
     document.querySelector('.chat-window').classList.add('hidden');
 }
 
+// Close settings
+function closeSettings() {
+    showSection('chats');
+}
+
 // Show section
 function showSection(sectionId) {
     document.querySelectorAll('.section').forEach(section => {
@@ -114,6 +125,10 @@ async function loadTables() {
             container.appendChild(element);
         });
         feather.replace();
+    } else {
+        const noTablesMessage = document.createElement('div');
+        noTablesMessage.textContent = 'No tables found';
+        container.appendChild(noTablesMessage);
     }
 }
 
@@ -138,6 +153,37 @@ async function loadRelations() {
             container.appendChild(element);
         });
         feather.replace();
+    } else {
+        const noRelationsMessage = document.createElement('div');
+        noRelationsMessage.textContent = 'No relations found';
+        container.appendChild(noRelationsMessage);
+    }
+}
+
+// Load archived data
+async function loadArchived() {
+    const archived = await fetchData('archived');
+    const container = document.querySelector('.archived-list');
+    container.innerHTML = '';
+    
+    if (archived && archived.length > 0) {
+        archived.forEach(item => {
+            const element = document.createElement('div');
+            element.className = 'call-item';
+            element.innerHTML = `
+                <i data-feather="archive"></i>
+                <div class="call-details">
+                    <span class="name">${item.table}</span>
+                    <span class="message">${item.description}</span>
+                </div>
+            `;
+            container.appendChild(element);
+        });
+        feather.replace();
+    } else {
+        const noArchivedMessage = document.createElement('div');
+        noArchivedMessage.textContent = 'No archived data';
+        container.appendChild(noArchivedMessage);
     }
 }
 
@@ -163,6 +209,10 @@ async function loadRecords() {
             container.appendChild(element);
         });
         feather.replace();
+    } else {
+        const noRecordsMessage = document.createElement('div');
+        noRecordsMessage.textContent = 'No recent records';
+        container.appendChild(noRecordsMessage);
     }
 }
 
@@ -192,6 +242,10 @@ function setupSearch() {
                 container.appendChild(element);
             });
             feather.replace();
+        } else {
+            const noResultsMessage = document.createElement('div');
+            noResultsMessage.textContent = 'No results found';
+            container.appendChild(noResultsMessage);
         }
     }, 300));
 }
