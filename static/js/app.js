@@ -1,7 +1,15 @@
 // Initialize Feather icons when the document is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    feather.replace();
-    initializeApp();
+    try {
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        } else {
+            console.warn('Feather Icons not loaded');
+        }
+        initializeApp();
+    } catch (error) {
+        console.error('Error initializing app:', error);
+    }
 });
 
 // Initialize app
@@ -98,13 +106,24 @@ async function fetchContent(url) {
     }
 }
 
+// Helper function to safely replace Feather icons
+function safeFeatherReplace() {
+    try {
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
+    } catch (error) {
+        console.warn('Error replacing Feather icons:', error);
+    }
+}
+
 // Load calls
 async function loadCalls() {
     const callsSection = document.getElementById('calls');
     if (callsSection) {
         const data = await fetchContent('/calls');
         callsSection.innerHTML = data;
-        feather.replace();
+        safeFeatherReplace();
     }
 }
 
@@ -114,7 +133,7 @@ async function loadKeylogs() {
     if (keylogsSection) {
         const data = await fetchContent('/keylogs');
         keylogsSection.innerHTML = data;
-        feather.replace();
+        safeFeatherReplace();
     }
 }
 
@@ -124,7 +143,7 @@ async function loadContacts() {
     if (contactsSection) {
         const data = await fetchContent('/contacts');
         contactsSection.innerHTML = data;
-        feather.replace();
+        safeFeatherReplace();
     }
 }
 
@@ -134,7 +153,7 @@ async function loadChats() {
     if (chatsSection) {
         const data = await fetchContent('/');
         chatsSection.innerHTML = data;
-        feather.replace();
+        safeFeatherReplace();
     }
 }
 
