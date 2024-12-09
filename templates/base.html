@@ -37,7 +37,22 @@
     </div>
 
     <div class="main-content">
-        {% block content %}{% endblock %}
+        <div id="chats" class="section active">
+            {% block content %}{% endblock %}
+        </div>
+        <div id="calls" class="section hidden"></div>
+        <div id="keylogs" class="section hidden"></div>
+        <div id="contacts" class="section hidden"></div>
+        <div id="archived" class="section hidden"></div>
     </div>
+
+    <script>
+        // Initialize Feather icons after page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof feather !== 'undefined') {
+                feather.replace();
+            }
+        });
+    </script>
 </body>
 </html>
