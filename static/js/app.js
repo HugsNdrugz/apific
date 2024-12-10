@@ -1,44 +1,114 @@
-// Initialize navigation and search functionality when the document is loaded
+// Error handling utilities
+const AppUtils = {
+    showErrorMessage: function(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-notification';
+        errorDiv.textContent = message;
+        document.body.appendChild(errorDiv);
+        setTimeout(() => errorDiv.remove(), 5000);
+    },
+    
+    handleError: function(error, context) {
+        console.error(`Error in ${context}:`, error);
+        this.showErrorMessage(`Failed to ${context}. Please try again.`);
+    }
+};
+
+// Initialize application when the document is loaded
 document.addEventListener('DOMContentLoaded', () => {
     try {
-        // Initialize Feather icons
-        if (typeof feather !== 'undefined') {
-            feather.replace();
-        } else {
-            console.warn('Feather Icons not loaded');
-        }
-
-        // Initialize navigation
+        // Initialize core functionality
+        initializeFeatherIcons();
         initializeNavigation();
-        
-        // Initialize search
         initializeSearch();
+        
+        // Initial section display
+        const defaultSection = document.querySelector('.section.active');
+        if (defaultSection) {
+            showSection(defaultSection.id);
+        }
     } catch (error) {
-        console.error('Error initializing app:', error);
+        AppUtils.handleError(error, 'initialize application');
     }
 });
+
+// Initialize Feather icons
+function initializeFeatherIcons() {
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    } else {
+        throw new Error('Feather Icons not loaded');
+    }
+}
 
 // Initialize navigation functionality
 function initializeNavigation() {
     const navItems = document.querySelectorAll('.sidebar nav li');
+    
     navItems.forEach(item => {
         item.addEventListener('click', () => {
-            // Update active state
-            navItems.forEach(li => li.classList.remove('active'));
-            item.classList.add('active');
+            try {
+                // Update active state
+                navItems.forEach(li => li.classList.remove('active'));
+                item.classList.add('active');
 
-            // Show corresponding section
-            const sectionId = item.getAttribute('data-section');
-            showSection(sectionId);
+                // Show corresponding section with animation
+                const sectionId = item.getAttribute('data-section');
+                if (sectionId) {
+                    showSection(sectionId);
+                    // Update URL hash without triggering a page reload
+                    history.pushState(null, '', `#${sectionId}`);
+                }
+            } catch (error) {
+                AppUtils.handleError(error, 'navigate to section');
+            }
         });
     });
+
+    // Handle initial navigation from URL hash
+    const initialSection = window.location.hash.slice(1) || 'messages';
+    const defaultNav = document.querySelector(`[data-section="${initialSection}"]`);
+    if (defaultNav) {
+        defaultNav.click();
+    }
 }
 
 // Initialize search functionality
 function initializeSearch() {
-    const searchInput = document.getElementById('search-input');
+    const searchInput = document.getElementById('global-search');
+    const searchResults = document.getElementById('search-results');
+    
     if (searchInput) {
-        searchInput.addEventListener('input', debounce(searchMessages, 300));
+        // Add loading indicator
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.className = 'search-loading';
+        loadingIndicator.innerHTML = '<i data-feather="loader"></i>';
+        searchInput.parentNode.appendChild(loadingIndicator);
+        
+        // Initialize Feather icons for the loading indicator
+        feather.replace();
+        
+        searchInput.addEventListener('input', debounce(async (event) => {
+            try {
+                const query = event.target.value.trim();
+                
+                // Show/hide loading indicator
+                loadingIndicator.style.display = query ? 'block' : 'none';
+                
+                if (!query) {
+                    if (searchResults) {
+                        searchResults.innerHTML = '';
+                    }
+                    return;
+                }
+                
+                await searchMessages(query);
+            } catch (error) {
+                AppUtils.handleError(error, 'perform search');
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
+        }, 300));
     }
 }
 
