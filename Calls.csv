@@ -1,0 +1,237 @@
+call_id,call_type,time,from_to,duration,location
+1,Received,1729225560,4357494457,0,nan
+2,Received,1729197840,4356304583,0,nan
+3,Received,1729197840,4356304583,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+4,Called,1729196880,4356304583,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+5,Called,1729195920,4352995186,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+6,Called,1729191720,4352995186,0,nan
+7,Called,1729191720,4352995186,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+8,Called,1729188120,4352995186,0,nan
+9,Received,1729187640,4352995186,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+10,Called,1729186980,4352995186,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+11,Missed,1729103580,4357499621 (Krysties Mama),0,nan
+12,Received,1729004940,4356309538,0,nan
+13,Received,1728597540,4066475305,0,nan
+14,Received,1728597540,4066475305,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+15,Called,1728588180,4352997375 (Austin Michael Clayton ❤️),0,nan
+16,Received,1728582840,4352997375 (Austin Michael Clayton ❤️),0,nan
+17,Called,1728573300,4352997375 (Austin Michael Clayton ❤️),0,nan
+18,Called,1728573300,4352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+19,Received,1728570420,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+20,Received,1728570420,4352997375 (Austin Michael Clayton ❤️),0,nan
+21,Received,1728557580,4352997375 (Austin Michael Clayton ❤️),0,"50 E Main St, Wellington, UT 84542, USA, Wellington"
+22,Received,1728557580,4352997375 (Austin Michael Clayton ❤️),0,nan
+23,Received,1728551760,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+24,Received,1728551760,4352997375 (Austin Michael Clayton ❤️),0,nan
+25,Called,1728481980,14352997924,0,nan
+26,Called,1728481980,14352997924,0,"680 E Main St, Wellington, UT 84542, USA, Wellington"
+27,Called,1728406020,4353842746,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+28,Called,1728406020,4353842746,0,nan
+29,Called,1728042540,14356309538,0,nan
+30,Called,1728042540,14356309538,0,"50 E Main St, Wellington, UT 84542, USA, Wellington"
+31,Rejected,1728039120,4356309538,0,nan
+32,Rejected,1728039120,4356309538,0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+33,Called,1727860680,4356377980,0,nan
+34,Called,1727860680,4356377980,0,"210 E Main St, Price, UT 84501, USA, Price"
+35,Received,1727859660,4356309538,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+36,Called,1727857860,14352995644,0,nan
+37,Called,1727857860,14352995644,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+38,Called,1727856660,14352995644,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+39,Received,1727809620,"4352997935 (MCNEEL,ROBERT)",0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+40,Received,1727809620,"4352997935 (MCNEEL,ROBERT)",0,nan
+41,Received,1727802180,4352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+42,Received,1727802180,4352997375 (Austin Michael Clayton ❤️),0,nan
+43,Received,1727642580,3322662685,0,nan
+44,Received,1727642580,3322662685,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+45,Called,1727530620,4352997375 (Austin Michael Clayton ❤️),0,nan
+46,Received,1727021220,"4352997935 (MCNEEL,ROBERT)",0,nan
+47,Received,1727021220,"4352997935 (MCNEEL,ROBERT)",0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+48,Missed,1726994280,4352997375 (Austin Michael Clayton ❤️),0,nan
+49,Missed,1726994280,4352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+50,Missed,1726929240,4352997375 (Austin Michael Clayton ❤️),0,nan
+51,Missed,1726927200,4352997375 (Austin Michael Clayton ❤️),0,nan
+52,Called,1726925400,4352997375 (Austin Michael Clayton ❤️),0,nan
+53,Called,1726925400,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+54,Received,1726909200,4352997375 (Austin Michael Clayton ❤️),0,nan
+55,Received,1726780980,"4352997935 (MCNEEL,ROBERT)",0,nan
+56,Received,1726779900,"4352997935 (MCNEEL,ROBERT)",0,nan
+57,Received,1726770600,8015801449 (Susanna Maria),0,nan
+58,Received,1726769700,"4352997935 (MCNEEL,ROBERT)",0,nan
+59,Called,1726765380,18015801449 (Susanna Maria),0,nan
+60,Called,1726765380,18015801449 (Susanna Maria),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+61,Missed,1726435320,4352997375 (Austin Michael Clayton ❤️),0,nan
+62,Called,1726328880,4356309538,0,nan
+63,Called,1726326000,4352997375 (Austin Michael Clayton ❤️),0,nan
+64,Called,1726326000,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+65,Called,1726305120,4352997375 (Austin Michael Clayton ❤️),0,nan
+66,Called,1726239720,4352997375 (Austin Michael Clayton ❤️),0,nan
+67,Called,1726187520,4352997375 (Austin Michael Clayton ❤️),0,nan
+68,Called,1726187520,4352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+69,Called,1726157520,18015801449 (Susanna Maria),0,nan
+70,Called,1726153800,4352997375 (Austin Michael Clayton ❤️),0,nan
+71,Called,1726148220,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+72,Called,1726148220,4352997375 (Austin Michael Clayton ❤️),0,nan
+73,Called,1726145340,4352997375 (Austin Michael Clayton ❤️),0,nan
+74,Missed,1726143840,4352997375 (Austin Michael Clayton ❤️),0,nan
+75,Missed,1726143600,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+76,Called,1726140900,4352997375 (Austin Michael Clayton ❤️),0,nan
+77,Received,1726140240,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+78,Received,1726067580,4352997375 (Austin Michael Clayton ❤️),0,nan
+79,Received,1726067580,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+80,Called,1726067160,14352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+81,Called,1726067100,"4352997935 (MCNEEL,ROBERT)",0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+82,Called,1725975900,14352997375 (Austin Michael Clayton ❤️),0,nan
+83,Called,1724975940,4352997935,0,nan
+84,Called,1724975940,4352997935,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+85,Called,1724948760,6096746,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+86,Called,1724948760,6096746,0,nan
+87,Called,1724948640,6096746,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+88,Called,1724948400,6096746,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+89,Missed,1724872920,4352997935,0,nan
+90,Missed,1724872920,"4352997935 (MCNEEL,ROBERT)",0,nan
+91,Missed,1724869920,"4352997935 (MCNEEL,ROBERT)",0,nan
+92,Received,1724861580,4352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+93,Received,1724861580,4352997375 (Austin Michael Clayton ❤️),0,nan
+94,Called,1724672700,14356363289,0,nan
+95,Called,1724672700,14356363289,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+96,Received,1724607000,4352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+97,Received,1724607000,4352997375 (Austin Michael Clayton ❤️),0,nan
+98,Called,1723794420,14352995644,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+99,Called,1723794420,14352995644,0,nan
+100,Received,1723203240,4352997375 (Austin Michael Clayton ❤️),0,nan
+101,nan,2024-09-13 15:02:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+102,nan,2024-09-13 00:32:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+103,nan,2024-09-13 00:32:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+104,nan,2024-09-12 16:12:00+00:00,18015801449 (Susanna Maria),0,nan
+105,nan,2024-09-12 15:10:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+106,nan,2024-09-12 13:37:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+107,nan,2024-09-12 13:37:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+108,nan,2024-09-12 12:49:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+109,nan,2024-09-12 12:24:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+110,nan,2024-09-12 12:20:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+111,nan,2024-09-12 11:35:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+112,nan,2024-09-12 11:24:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+113,nan,2024-09-11 15:13:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+114,nan,2024-09-11 15:13:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+115,nan,2024-09-11 15:06:00+00:00,14352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+116,nan,2024-09-11 15:05:00+00:00,"4352997935 (MCNEEL,ROBERT)",0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+117,nan,2024-09-10 13:45:00+00:00,14352997375 (Austin Michael Clayton ❤️),0,nan
+118,nan,2024-08-29 23:59:00+00:00,4352997935,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+119,nan,2024-08-29 23:59:00+00:00,4352997935,0,nan
+120,nan,2024-08-29 16:26:00+00:00,6096746,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+121,nan,2024-08-29 16:26:00+00:00,6096746,0,nan
+122,nan,2024-08-29 16:24:00+00:00,6096746,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+123,nan,2024-08-29 16:20:00+00:00,6096746,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+124,nan,2024-08-28 19:22:00+00:00,4352997935,0,nan
+125,nan,2024-08-28 19:22:00+00:00,"4352997935 (MCNEEL,ROBERT)",0,nan
+126,nan,2024-08-28 18:32:00+00:00,"4352997935 (MCNEEL,ROBERT)",0,nan
+127,nan,2024-08-28 16:13:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+128,nan,2024-08-28 16:13:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+129,nan,2024-08-26 11:45:00+00:00,14356363289,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+130,nan,2024-08-26 11:45:00+00:00,14356363289,0,nan
+131,nan,2024-08-25 17:30:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+132,nan,2024-08-25 17:30:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+133,nan,2024-08-16 07:47:00+00:00,14352995644,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+134,nan,2024-08-16 07:47:00+00:00,14352995644,0,nan
+135,nan,2024-08-09 11:34:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+136,nan,2024-08-09 11:05:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+137,nan,2024-08-09 10:05:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+138,nan,2024-08-09 10:05:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+139,nan,2024-08-09 08:06:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+140,nan,2024-08-09 08:06:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+141,nan,2024-08-08 15:49:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+142,nan,2024-08-08 15:49:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+143,nan,2024-08-08 10:59:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 E Main St, Wellington, UT 84542, USA, Wellington"
+144,nan,2024-08-08 10:59:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+145,nan,2024-08-07 14:21:00+00:00,4356506344,0,nan
+146,nan,2024-08-07 14:18:00+00:00,8013670394,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+147,nan,2024-08-07 14:16:00+00:00,4356370171,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+148,nan,2024-08-07 11:35:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+149,nan,2024-08-07 11:35:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+150,nan,2024-08-07 10:34:00+00:00,4359227514,0,"50 E Main St, Wellington, UT 84542, USA, Wellington"
+151,nan,2024-08-07 10:34:00+00:00,4359227514,0,nan
+152,nan,2024-08-07 09:45:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+153,nan,2024-08-07 09:45:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+154,nan,2024-08-06 20:44:00+00:00,4353842746,0,nan
+155,nan,2024-08-03 16:44:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"1010 E Main St, Wellington, UT 84542, USA, Wellington"
+156,nan,2024-08-03 16:44:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+157,nan,2024-08-03 16:33:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+158,nan,2024-08-03 16:11:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+159,nan,2024-08-03 16:11:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+160,nan,2024-08-03 14:48:00+00:00,"4352997935 (MCNEEL,ROBERT)",0,"70 S 700 E, Wellington, UT 84542, USA, Wellington"
+161,nan,2024-08-03 14:48:00+00:00,"4352997935 (MCNEEL,ROBERT)",0,nan
+162,nan,2024-08-03 13:30:00+00:00,"14352997935 (MCNEEL,ROBERT)",0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+163,nan,2024-08-03 13:30:00+00:00,"14352997935 (MCNEEL,ROBERT)",0,nan
+164,nan,2024-08-03 13:29:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+165,nan,2024-08-03 12:56:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+166,nan,2024-08-03 12:56:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+167,nan,2024-08-03 12:10:00+00:00,14352997375 (Austin Michael Clayton ❤️),0,"50 E Main St, Wellington, UT 84542, USA, Wellington"
+168,nan,2024-08-03 12:10:00+00:00,14352997375 (Austin Michael Clayton ❤️),0,nan
+169,nan,2024-08-03 12:01:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 E Main St, Wellington, UT 84542, USA, Wellington"
+170,nan,2024-08-03 08:49:00+00:00,14352995644,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+171,nan,2024-08-03 08:49:00+00:00,14352995644,0,nan
+172,nan,2024-08-01 12:56:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+173,nan,2024-08-01 01:49:00+00:00,4356305198,0,nan
+174,nan,2024-07-31 22:58:00+00:00,7089828198,0,nan
+175,nan,2024-07-31 22:58:00+00:00,7089828198,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+176,nan,2024-07-31 10:39:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+177,nan,2024-07-31 10:39:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+178,nan,2024-07-30 16:07:00+00:00,8015801449 (Susanna Maria),0,nan
+179,nan,2024-07-30 12:59:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+180,nan,2024-07-30 12:59:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"398 E Main St, Wellington, UT 84542, USA, Wellington"
+181,nan,2024-07-30 12:54:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"680 E Main St, Wellington, UT 84542, USA, Wellington"
+182,nan,2024-07-30 09:33:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+183,nan,2024-07-30 09:33:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+184,nan,2024-07-20 04:49:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+185,nan,2024-07-20 04:49:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+186,nan,2024-07-20 04:48:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+187,nan,2024-07-19 18:29:00+00:00,4352995644,0,nan
+188,nan,2024-07-19 18:29:00+00:00,4352995644,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+189,nan,2024-07-19 18:28:00+00:00,4352995644,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+190,nan,2024-07-19 15:49:00+00:00,14352995644,0,nan
+191,nan,2024-07-19 13:24:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+192,nan,2024-07-19 13:24:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+193,nan,2024-07-19 11:38:00+00:00,14352995644,0,nan
+194,nan,2024-07-19 11:38:00+00:00,14352995644,0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+195,nan,2024-07-19 09:21:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"2195 E Main St, Wellington, UT 84542, USA, Wellington"
+196,nan,2024-07-19 09:21:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+197,nan,2024-07-19 08:14:00+00:00,14352995644,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+198,nan,2024-07-19 08:14:00+00:00,14352995644,0,nan
+199,nan,2024-07-18 16:19:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+200,nan,2024-07-18 16:19:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+201,nan,2024-07-18 09:02:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+202,nan,2024-07-17 17:23:00+00:00,4359383091,0,nan
+203,nan,2024-07-17 17:23:00+00:00,4359383091,0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+204,nan,2024-07-17 17:07:00+00:00,4352997935,0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+205,nan,2024-07-14 20:29:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+206,nan,2024-07-11 21:28:00+00:00,"4352997935 (MCNEEL,ROBERT)",0,nan
+207,nan,2024-07-11 21:28:00+00:00,"4352997935 (MCNEEL,ROBERT)",0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+208,nan,2024-07-10 13:22:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+209,nan,2024-07-10 08:53:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+210,nan,2024-07-10 08:53:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"500 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+211,nan,2024-07-09 12:20:00+00:00,4352997935,0,nan
+212,nan,2024-07-09 12:20:00+00:00,"4352997935 (MCNEEL,ROBERT)",0,"Unnamed Road, Draper, UT 84020, USA, Draper"
+213,nan,2024-07-05 01:53:00+00:00,"4352997935 (MCNEEL,ROBERT)",0,nan
+214,nan,2024-07-05 01:53:00+00:00,"4352997935 (MCNEEL,ROBERT)",0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+215,nan,2024-07-05 01:52:00+00:00,"4352997935 (MCNEEL,ROBERT)",0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+216,nan,2024-07-04 05:19:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+217,nan,2024-07-04 05:19:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+218,nan,2024-07-04 05:17:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+219,nan,2024-07-03 15:45:00+00:00,7608535433,0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+220,nan,2024-07-03 15:45:00+00:00,7608535433,0,nan
+221,nan,2024-07-02 20:33:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,nan
+222,nan,2024-07-02 20:33:00+00:00,4352997375 (Austin Michael Clayton ❤️),0,"1270 6800 S St, Price, UT 84501, USA, Price"
+223,nan,2024-06-29 13:40:00+00:00,"+14352997935 (MCNEEL,ROBERT)",0,nan
+224,nan,2024-06-28 13:14:00+00:00,+14352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+225,nan,2024-06-28 13:14:00+00:00,+14352997375 (Austin Michael Clayton ❤️),0,nan
+226,nan,2024-06-28 13:13:00+00:00,+14352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+227,nan,2024-06-28 13:11:00+00:00,+14352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+228,nan,2024-06-28 13:10:00+00:00,+14352997375 (Austin Michael Clayton ❤️),0,"50 S 700 E, Wellington, UT 84542, USA, Wellington"
+229,nan,2024-06-28 07:09:00+00:00,+14352997375 (Austin Michael Clayton ❤️),0,nan
+230,nan,2024-06-28 07:09:00+00:00,+14352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+231,nan,2024-06-27 14:54:00+00:00,+14352997375 (Austin Michael Clayton ❤️),0,"50 E Main St, Wellington, UT 84542, USA, Wellington"
+232,nan,2024-06-27 14:54:00+00:00,+14352997375 (Austin Michael Clayton ❤️),0,nan
+233,nan,2024-06-27 02:56:00+00:00,+14352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+234,nan,2024-06-27 02:56:00+00:00,+14352997375 (Austin Michael Clayton ❤️),0,nan
+235,nan,2024-06-26 18:15:00+00:00,+14352997375 (Austin Michael Clayton ❤️),0,"510 W Hwy Dr, Wellington, UT 84542, USA, Wellington"
+236,nan,2024-06-25 21:46:00+00:00,+13855631691,0,nan
