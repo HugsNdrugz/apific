@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Installed Applications{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Installed Applications</h1>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Application Name</th>
+                    <th>Package Name</th>
+                    <th>Install Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in installed_apps %}
+                <tr>
+                    <td>{{ app.application_name }}</td>
+                    <td>{{ app.package_name }}</td>
+                    <td>{{ app.install_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

