@@ -6,8 +6,11 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Initialize Flask app
-app = Flask(__name__)
+# Initialize Flask app with template configuration
+app = Flask(__name__, 
+           template_folder='templates',
+           static_folder='static',
+           static_url_path='/static')
 
 # Database configuration
 DATABASE = 'data.db'

