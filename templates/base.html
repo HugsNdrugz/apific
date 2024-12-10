@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="https://unpkg.com/feather-icons@4.29.0/dist/feather.min.js"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+    <script>
+        // Initialize Feather icons
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof feather !== 'undefined') {
+                feather.replace();
+            }
+        });
+    </script>
 </head>
 <body>
     <div class="sidebar">
@@ -20,10 +28,7 @@
                     <i data-feather="phone"></i>
                     <span>Calls</span>
                 </li>
-                <li data-section="archived">
-                    <i data-feather="archive"></i>
-                    <span>Archived</span>
-                </li>
+                <!-- Removed archived section as it's not implemented in the database -->
                 <li data-section="keylogs">
                     <i data-feather="key"></i>
                     <span>Keylogs</span>
