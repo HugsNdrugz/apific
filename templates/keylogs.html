@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Keylogs{% endblock %}
+
+{% block keylogs_content %}
+<div class="container">
+    <h1>Keylog History</h1>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Application</th>
+                    <th>Time</th>
+                    <th>Text</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for keylog in keylogs %}
+                <tr>
+                    <td>{{ keylog.application }}</td>
+                    <td>{{ keylog.time }}</td>
+                    <td>{{ keylog.text }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

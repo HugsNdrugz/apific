@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Call History{% endblock %}
+
+{% block calls_content %}
+<div class="container">
+    <h1>Call History</h1>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Contact</th>
+                    <th>Time</th>
+                    <th>Duration</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for call in call_logs %}
+                <tr>
+                    <td>{{ call.call_type }}</td>
+                    <td>{{ call.from_to }}</td>
+                    <td>{{ call.time }}</td>
+                    <td>{{ call.duration }} seconds</td>
+                    <td>{{ call.location }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
