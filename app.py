@@ -24,6 +24,23 @@ def get_db():
             return None
     return db
 
+def init_db():
+    try:
+        with app.app_context():
+            db = get_db()
+            if db is None:
+                logger.error("Could not connect to database for initialization")
+                return False
+            
+            with app.open_resource('schema.sql', mode='r') as f:
+                db.cursor().executescript(f.read())
+            db.commit()
+            logger.info("Database initialized successfully")
+            return True
+    except Exception as e:
+        logger.error(f"Error initializing database: {e}")
+        return False
+
 @app.teardown_appcontext
 def close_connection(exception):
     db = getattr(g, '_database', None)
@@ -38,78 +55,111 @@ def serve_static(filename):
 # Main menu route
 @app.route('/')
 def index():
-    conn = get_db()
-    if conn:
-        contacts = conn.execute('''
+    db = get_db()
+    if not db:
+        return "Error: Could not connect to database.", 500
+    
+    try:
+        contacts = db.execute('''
             SELECT DISTINCT sender AS name FROM ChatMessages 
             UNION SELECT DISTINCT from_to AS name FROM SMS
         ''').fetchall()
-    else:
-        contacts = []
-    return render_template('main_menu.html', contacts=contacts)
+        return render_template('main_menu.html', contacts=contacts)
+    except sqlite3.Error as e:
+        logger.error(f"Database error in index route: {e}")
+        return "Error: Could not fetch contacts.", 500
 
 # Chat route
 @app.route('/chat/<name>')
 def chat(name):
-    conn = get_db()
-    if conn:
-        messages = conn.execute(
+    db = get_db()
+    if not db:
+        return "Error: Could not connect to database.", 500
+    
+    try:
+        messages = db.execute(
             'SELECT * FROM ChatMessages WHERE sender = ? ORDER BY time', 
             (name,)
         ).fetchall()
-    else:
-        messages = []
-    return render_template('chat.html', name=name, messages=messages)
+        return render_template('chat.html', name=name, messages=messages)
+    except sqlite3.Error as e:
+        logger.error(f"Database error in chat route: {e}")
+        return "Error: Could not fetch messages.", 500
 
 # SMS route
 @app.route('/sms/<name>')
 def sms_thread(name):
-    conn = get_db()
-    if conn:
-        sms_messages = conn.execute(
+    db = get_db()
+    if not db:
+        return "Error: Could not connect to database.", 500
+    
+    try:
+        sms_messages = db.execute(
             'SELECT * FROM SMS WHERE from_to = ? ORDER BY time', 
             (name,)
         ).fetchall()
-    else:
-        sms_messages = []
-    return render_template('sms.html', name=name, sms_messages=sms_messages)
+        return render_template('sms.html', name=name, sms_messages=sms_messages)
+    except sqlite3.Error as e:
+        logger.error(f"Database error in sms route: {e}")
+        return "Error: Could not fetch SMS messages.", 500
 
 # Calls route
 @app.route('/calls')
 def calls():
-    conn = get_db()
-    if conn:
-        call_logs = conn.execute('SELECT * FROM Calls ORDER BY time').fetchall()
+    db = get_db()
+    if not db:
+        return "Error: Could not connect to database.", 500
+    
+    try:
+        call_logs = db.execute('SELECT * FROM Calls ORDER BY time DESC').fetchall()
         return render_template('calls.html', call_logs=call_logs)
-    return "Error: Could not connect to the database.", 500
+    except sqlite3.Error as e:
+        logger.error(f"Database error in calls route: {e}")
+        return "Error: Could not fetch call logs.", 500
 
 # Keylogs route
 @app.route('/keylogs')
 def keylogs():
-    conn = get_db()
-    if conn:
-        keylogs = conn.execute('SELECT * FROM Keylogs ORDER BY time').fetchall()
+    db = get_db()
+    if not db:
+        return "Error: Could not connect to database.", 500
+    
+    try:
+        keylogs = db.execute('SELECT * FROM Keylogs ORDER BY time DESC').fetchall()
         return render_template('keylogs.html', keylogs=keylogs)
-    return "Error: Could not connect to the database.", 500
+    except sqlite3.Error as e:
+        logger.error(f"Database error in keylogs route: {e}")
+        return "Error: Could not fetch keylogs.", 500
 
 # Installed Apps route
 @app.route('/installed_apps')
 def installed_apps():
-    conn = get_db()
-    if conn:
-        installed_apps = conn.execute('SELECT * FROM InstalledApps ORDER BY install_date').fetchall()
+    db = get_db()
+    if not db:
+        return "Error: Could not connect to database.", 500
+    
+    try:
+        installed_apps = db.execute(
+            'SELECT * FROM InstalledApps ORDER BY install_date DESC'
+        ).fetchall()
         return render_template('installed_apps.html', installed_apps=installed_apps)
-    return "Error: Could not connect to the database.", 500
+    except sqlite3.Error as e:
+        logger.error(f"Database error in installed_apps route: {e}")
+        return "Error: Could not fetch installed apps.", 500
 
 # Contacts route
 @app.route('/contacts')
 def contacts_list():
-    conn = get_db()
-    if conn:
-        contacts = conn.execute('SELECT * FROM Contacts ORDER BY name').fetchall()
+    db = get_db()
+    if not db:
+        return "Error: Could not connect to database.", 500
+    
+    try:
+        contacts = db.execute('SELECT * FROM Contacts ORDER BY name').fetchall()
         return render_template('contacts.html', contacts=contacts)
-    return "Error: Could not connect to the database.", 500
-
+    except sqlite3.Error as e:
+        logger.error(f"Database error in contacts route: {e}")
+        return "Error: Could not fetch contacts.", 500
 
 # Search functionality
 @app.route('/search', methods=['POST'])
@@ -118,19 +168,19 @@ def search():
     if not search_term:
         return jsonify({'error': 'Search term is required.'}), 400
 
-    conn = get_db()
-    if not conn:
+    db = get_db()
+    if not db:
         return jsonify({'error': 'Could not connect to database'}), 500
 
     try:
         # Search messages
-        chat_results = conn.execute(
-            "SELECT sender, text, time FROM ChatMessages WHERE text LIKE ? ORDER BY time",
+        chat_results = db.execute(
+            "SELECT sender, text, time FROM ChatMessages WHERE text LIKE ? ORDER BY time DESC",
             ('%' + search_term + '%',)
         ).fetchall()
 
-        sms_results = conn.execute(
-            "SELECT from_to, text, time FROM SMS WHERE text LIKE ? ORDER BY time",
+        sms_results = db.execute(
+            "SELECT from_to, text, time FROM SMS WHERE text LIKE ? ORDER BY time DESC",
             ('%' + search_term + '%',)
         ).fetchall()
 
@@ -155,37 +205,11 @@ def search():
         logger.error(f"Database error in search route: {e}")
         return jsonify({'error': str(e)}), 500
 
-# Debug route to examine database schema
-@app.route('/debug/db-schema')
-def debug_schema():
-    db = get_db()
-    if not db:
-        return "Could not connect to database", 500
-    
-    try:
-        # Get all tables
-        tables = db.execute("""
-            SELECT name FROM sqlite_master 
-            WHERE type='table' AND name NOT LIKE 'sqlite_%'
-        """).fetchall()
-        
-        schema_info = {}
-        # Get schema for each table
-        for table in tables:
-            table_name = table['name']
-            columns = db.execute(f"PRAGMA table_info({table_name})").fetchall()
-            schema_info[table_name] = [
-                {'name': col['name'], 
-                 'type': col['type'],
-                 'notnull': col['notnull'],
-                 'pk': col['pk']} 
-                for col in columns
-            ]
-        
-        return jsonify(schema_info)
-    except sqlite3.Error as e:
-        logger.error(f"Error getting schema: {e}")
-        return str(e), 500
-
 if __name__ == '__main__':
+    if not os.path.exists(DATABASE):
+        if init_db():
+            logger.info("Database created and initialized")
+        else:
+            logger.error("Failed to initialize database")
+            exit(1)
     app.run(host='0.0.0.0', port=5000, debug=True)
