@@ -3,21 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messenger App</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Database Explorer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://unpkg.com/feather-icons"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Messages</h1>
-        <div class="messages">
-            {% for message in messages %}
-            <div class="message">
-                <strong>{{ message[1] }}</strong>
-                <p>{{ message[2] }}</p>
-                <small>{{ message[3] }}</small>
-            </div>
-            {% endfor %}
-        </div>
+    <div class="sidebar">
+        <i data-feather="database" class="messenger-logo"></i>
+        <ul>
+            <li data-section="chats" class="active">
+                <i data-feather="users"></i>
+            </li>
+            <li data-section="marketplace">
+                <i data-feather="table"></i>
+            </li>
+            <li data-section="requests">
+                <i data-feather="git-branch"></i>
+            </li>
+            <li data-section="archived">
+                <i data-feather="archive"></i>
+            </li>
+        </ul>
+        <ul class="bottom-menu">
+            <li data-section="settings">
+                <i data-feather="settings"></i>
+            </li>
+        </ul>
     </div>
+
+    <div class="main-content">
+        <div id="chats" class="section active">
+            <div class="top-bar">
+                <h1>Contacts</h1>
+                <div class="right-icons">
+                    <i data-feather="refresh-cw" onclick="refreshData()"></i>
+                </div>
+            </div>
+            <input type="text" id="search" placeholder="Search database">
+            <div class="chat-list"></div>
+        </div>
+
+        <div id="requests" class="section hidden">
+            <div class="top-bar">
+                <h1>Relations</h1>
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-button active" onclick="filterRequests('Primary')">Primary Keys</button>
+                <button class="filter-button" onclick="filterRequests('Foreign')">Foreign Keys</button>
+            </div>
+            <div class="request-list"></div>
+        </div>
+
+        <div id="archived" class="section hidden">
+            <div class="top-bar">
+                <h1>Archive</h1>
+            </div>
+            <div class="archived-list"></div>
+        </div>
+
+        <div id="marketplace" class="section hidden">
+            <div class="top-bar">
+                <h1>Tables</h1>
+            </div>
+            <div class="marketplace-list"></div>
+        </div>
+
+        <div id="settings" class="section hidden">
+            <div class="top-bar">
+                <h1>Settings</h1>
+                <div class="right-icons">
+                    <i data-feather="x" onclick="closeSettings()"></i>
+                </div>
+            </div>
+            <div class="settings-content" id="settings-content"></div>
+        </div>
+
+        <div class="chat-window hidden"></div>
+    </div>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

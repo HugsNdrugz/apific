@@ -1,22 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messenger App</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-    <div class="container">
-        <h1>Messages</h1>
-        <div class="contact-list">
-            {% for contact in contacts %}
-            <div class="contact-card">
-                <div class="contact-name">{{ contact.name }}</div>
-                <div class="last-message">{{ contact.last_message }}</div>
-            </div>
-            {% endfor %}
-        </div>
+{% extends "base.html" %}
+
+{% block title %}Messenger App{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Chats</h1>
+    
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search messages..." onkeyup="searchMessages()">
+        <div id="search-results"></div>
     </div>
-</body>
-</html>
+
+    <div id="conversation-list">
+        {% for contact in contacts %}
+        <div class="contact-card" data-contact="{{ contact['name'] }}">
+            <div class="profile-picture">{{ contact['name'][:2].upper() }}</div>
+            <div class="contact-header">
+                <span class="contact-name">{{ contact['name'] }}</span>
+                <div class="contact-links">
+                    <a href="{{ url_for('chat', name=contact['name']) }}" class="contact-link">Chat</a>
+                    <a href="{{ url_for('sms_thread', name=contact['name']) }}" class="contact-link">SMS</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="menu-buttons">
+        <a href="/calls" class="menu-button">
+            <i data-feather="phone"></i>
+            <span>Calls</span>
+        </a>
+        <a href="/keylogs" class="menu-button">
+            <i data-feather="key"></i>
+            <span>Keylogs</span>
+        </a>
+        <a href="/installed_apps" class="menu-button">
+            <i data-feather="grid"></i>
+            <span>Apps</span>
+        </a>
+        <a href="/contacts" class="menu-button">
+            <i data-feather="users"></i>
+            <span>Contacts</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
