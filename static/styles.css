@@ -5,6 +5,7 @@
     --text-color: #e4e6eb; /* Light Text */
     --surface-color: #242526; /* Surface Color */
     --gray-color: #8a8d91; /* Gray text for timestamps */
+    --hover-color: #303030; /* Hover state color */
 }
 
 body {
@@ -14,7 +15,8 @@ body {
     background-color: var(--background-color);
     color: var(--text-color);
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .sidebar {
