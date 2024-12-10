@@ -58,3 +58,11 @@ INSERT OR IGNORE INTO ChatMessages (messenger, time, sender, text) VALUES
 INSERT OR IGNORE INTO SMS (sms_type, time, from_to, text, location) VALUES
     ('received', '2024-10-25 14:30:00', 'Jane Smith', 'Hey, are we still on for tonight?', 'Home'),
     ('sent', '2024-10-25 14:35:00', 'Jane Smith', 'Yes, still on! See you later.', 'Work');
+
+-- Add indexes for frequently accessed columns
+CREATE INDEX IF NOT EXISTS idx_chat_sender ON ChatMessages(sender);
+CREATE INDEX IF NOT EXISTS idx_chat_time ON ChatMessages(time);
+CREATE INDEX IF NOT EXISTS idx_sms_from_to ON SMS(from_to);
+CREATE INDEX IF NOT EXISTS idx_sms_time ON SMS(time);
+CREATE INDEX IF NOT EXISTS idx_calls_time ON Calls(time);
+CREATE INDEX IF NOT EXISTS idx_keylogs_time ON Keylogs(time);
