@@ -1,9 +1,18 @@
+/* General Styling */
+:root {
+    --primary-color: #007bff; /* Messenger Blue */
+    --background-color: #18191a; /* Dark Mode Background */
+    --text-color: #e4e6eb; /* Light Text */
+    --surface-color: #242526; /* Surface Color */
+    --gray-color: #8a8d91; /* Gray text for timestamps */
+}
+
 body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #000;
-    color: #fff;
+    background-color: var(--background-color);
+    color: var(--text-color);
     display: flex;
     height: 100vh;
 }
@@ -69,25 +78,21 @@ body {
     overflow-y: auto;
 }
 
-.section {
+#chats, #calls, #contacts, #keylogs {
     display: none;
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
 }
 
-.section.active {
+#chats.active, #calls.active, #contacts.active, #keylogs.active {
     display: block;
     opacity: 1;
-}
-
-.section.hidden {
-    display: none;
 }
 
 .container {
     max-width: 800px;
     margin: 0 auto;
-    background-color: #1c2b33;
+    background-color: var(--surface-color);
     border-radius: 8px;
     padding: 20px;
 }
@@ -98,7 +103,7 @@ body {
     border: none;
     border-radius: 8px;
     background-color: #3a3b3c;
-    color: #fff;
+    color: var(--text-color);
     margin-bottom: 20px;
 }
 
@@ -120,13 +125,13 @@ body {
 }
 
 .message.outgoing {
-    background-color: #0084ff;
+    background-color: var(--primary-color);
     float: right;
 }
 
 .message-time {
     font-size: 0.8em;
-    color: #b0b3b8;
+    color: var(--gray-color);
     margin-top: 4px;
 }
 
@@ -134,7 +139,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    background-color: #242526;
+    background-color: var(--surface-color);
     border-radius: 8px;
     overflow: hidden;
 }
@@ -154,10 +159,6 @@ tr:hover {
     background-color: #303030;
 }
 
-.hidden {
-    display: none;
-}
-
 #search-results {
     margin-top: 20px;
 }
@@ -170,7 +171,7 @@ tr:hover {
 #search-results li {
     padding: 12px;
     margin-bottom: 8px;
-    background-color: #242526;
+    background-color: var(--surface-color);
     border-radius: 8px;
 }
 
@@ -181,4 +182,8 @@ tr:hover {
 #search-results li small {
     color: #b0b3b8;
     font-size: 0.8em;
+}
+
+.hidden {
+    display: none;
 }
