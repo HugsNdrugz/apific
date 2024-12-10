@@ -1,7 +1,5 @@
 from flask import Flask, render_template, send_from_directory, request, jsonify
-import psycopg2
-from psycopg2.extras import RealDictCursor
-import os
+import sqlite3
 import logging
 
 # Configure logging
@@ -11,14 +9,15 @@ logger = logging.getLogger(__name__)
 # Initialize Flask app
 app = Flask(__name__)
 
+# Database configuration
+DATABASE = 'data.db'
+
 def get_db():
     try:
-        conn = psycopg2.connect(
-            os.environ['DATABASE_URL'],
-            cursor_factory=RealDictCursor
-        )
+        conn = sqlite3.connect(DATABASE)
+        conn.row_factory = sqlite3.Row
         return conn
-    except Exception as e:
+    except sqlite3.Error as e:
         logger.error(f"Database error: {e}")
         return None
 
@@ -30,18 +29,16 @@ def index():
         return "Database connection error", 500
     
     try:
-        with conn.cursor() as cur:
-            cur.execute('''
-                SELECT DISTINCT name FROM (
-                    SELECT sender AS name FROM chat_messages 
-                    UNION 
-                    SELECT from_to AS name FROM sms
-                ) s ORDER BY name
-            ''')
-            contacts = cur.fetchall()
+        contacts = conn.execute('''
+            SELECT DISTINCT name FROM (
+                SELECT sender AS name FROM ChatMessages 
+                UNION 
+                SELECT from_to AS name FROM SMS
+            ) ORDER BY name
+        ''').fetchall()
         conn.close()
         return render_template('main_menu.html', contacts=contacts)
-    except Exception as e:
+    except sqlite3.Error as e:
         logger.error(f"Database error: {e}")
         return "Error fetching contacts", 500
 
