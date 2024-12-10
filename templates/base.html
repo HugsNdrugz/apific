@@ -5,78 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://unpkg.com/feather-icons@4.29.0/dist/feather.min.js"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
 </head>
 <body>
-    <div class="app-container">
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <i data-feather="database" class="sidebar-logo"></i>
-                <h1>Social Data</h1>
-            </div>
-            <nav>
-                <ul>
-                    <li data-section="messages" class="active">
-                        <i data-feather="message-circle"></i>
-                        <span>Messages</span>
-                        <div class="tooltip">View Messages</div>
-                    </li>
-                    <li data-section="calls">
-                        <i data-feather="phone"></i>
-                        <span>Calls</span>
-                        <div class="tooltip">Call History</div>
-                    </li>
-                    <li data-section="keylogs">
-                        <i data-feather="key"></i>
-                        <span>Keylogs</span>
-                        <div class="tooltip">Keyboard Logs</div>
-                    </li>
-                    <li data-section="apps">
-                        <i data-feather="grid"></i>
-                        <span>Apps</span>
-                        <div class="tooltip">Installed Apps</div>
-                    </li>
-                    <li data-section="contacts">
-                        <i data-feather="users"></i>
-                        <span>Contacts</span>
-                        <div class="tooltip">Contact List</div>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+    <div class="sidebar">
+        <nav>
+            <ul>
+                <li data-section="chats" class="active">
+                    <i data-feather="message-square"></i>
+                    <span>Messages</span>
+                </li>
+                <li data-section="calls">
+                    <i data-feather="phone"></i>
+                    <span>Calls</span>
+                </li>
+                <li data-section="archived">
+                    <i data-feather="archive"></i>
+                    <span>Archived</span>
+                </li>
+                <li data-section="keylogs">
+                    <i data-feather="key"></i>
+                    <span>Keylogs</span>
+                </li>
+                <li data-section="contacts">
+                    <i data-feather="users"></i>
+                    <span>Contacts</span>
+                </li>
+            </ul>
+        </nav>
+    </div>
 
-        <main class="main-content">
-            <div class="search-bar">
-                <div class="search-input-container">
-                    <i data-feather="search"></i>
-                    <input type="text" id="global-search" placeholder="Search across all data...">
-                </div>
-            </div>
-            
-            <div class="content-area">
-                <div id="messages" class="section active">
-                    {% block content %}{% endblock %}
-                </div>
-                <div id="calls" class="section">
-                    {% block calls_content %}{% endblock %}
-                </div>
-                <div id="keylogs" class="section">
-                    {% block keylogs_content %}{% endblock %}
-                </div>
-                <div id="apps" class="section">
-                    {% block apps_content %}{% endblock %}
-                </div>
-                <div id="contacts" class="section">
-                    {% block contacts_content %}{% endblock %}
-                </div>
-            </div>
-        </main>
+    <div class="main-content">
+        <div id="chats" class="section active">
+            {% block content %}{% endblock %}
+        </div>
+        <div id="calls" class="section" style="display: none;">
+            {% block calls_content %}{% endblock %}
+        </div>
+        <div id="keylogs" class="section" style="display: none;">
+            {% block keylogs_content %}{% endblock %}
+        </div>
+        <div id="contacts" class="section" style="display: none;">
+            {% block contacts_content %}{% endblock %}
+        </div>
     </div>
 
     <script>
+        // Initialize Feather icons after page load
         document.addEventListener('DOMContentLoaded', function() {
-            feather.replace();
+            if (typeof feather !== 'undefined') {
+                feather.replace();
+            }
         });
     </script>
 </body>
