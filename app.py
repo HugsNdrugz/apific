@@ -50,15 +50,13 @@ def chat(name):
         return "Database connection error", 500
     
     try:
-        with conn.cursor() as cur:
-            cur.execute(
-                'SELECT * FROM chat_messages WHERE sender = %s ORDER BY time DESC LIMIT 50',
-                (name,)
-            )
-            messages = cur.fetchall()
+        messages = conn.execute(
+            'SELECT * FROM ChatMessages WHERE sender = ? ORDER BY time DESC LIMIT 50',
+            (name,)
+        ).fetchall()
         conn.close()
         return render_template('chat.html', name=name, messages=messages)
-    except Exception as e:
+    except sqlite3.Error as e:
         logger.error(f"Database error: {e}")
         return "Error fetching messages", 500
 
