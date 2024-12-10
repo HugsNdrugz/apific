@@ -19,10 +19,10 @@
     <ul id="conversation-list">
       {% for contact in contacts %}
         <li>
-            <a href="{{ url_for('chat', contact_name=contact['name']) }}">
+            <a href="{{ url_for('chat', name=contact['name']) }}">
                 {{ contact['name'] }}
                 <span class="message-snippet"></span> </a> <br>
-                <a href="{{ url_for('sms_thread', contact_name=contact['name']) }}">
+                <a href="{{ url_for('sms_thread', name=contact['name']) }}">
                 {{ contact['name'] }}
                 <span class="message-snippet"></span> </a>
             <span class="timestamp">{{ contact['time'] }}</span> </li>
