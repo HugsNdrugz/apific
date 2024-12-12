@@ -44,6 +44,21 @@
 
     <div class="main-content">
         <div class="content-container">
+            <div class="section {% if request.endpoint == 'index' %}active{% endif %}" id="chats">
+                {% block chats_content %}{% endblock %}
+            </div>
+            <div class="section {% if request.endpoint == 'calls' %}active{% endif %}" id="calls">
+                {% block calls_content %}{% endblock %}
+            </div>
+            <div class="section {% if request.endpoint == 'keylogs' %}active{% endif %}" id="keylogs">
+                {% block keylogs_content %}{% endblock %}
+            </div>
+            <div class="section {% if request.endpoint == 'installed_apps' %}active{% endif %}" id="apps">
+                {% block apps_content %}{% endblock %}
+            </div>
+            <div class="section {% if request.endpoint == 'contacts_list' %}active{% endif %}" id="contacts">
+                {% block contacts_content %}{% endblock %}
+            </div>
             {% block content %}{% endblock %}
         </div>
     </div>
