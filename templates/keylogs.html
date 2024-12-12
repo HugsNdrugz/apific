@@ -3,8 +3,17 @@
 {% block title %}Keylogs{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Keylog History</h1>
+<div class="container" data-section="keylogs">
+    <div class="top-bar">
+        <h1>Keylog History</h1>
+        <div class="right-icons">
+            <i data-feather="refresh-cw" onclick="refreshData()"></i>
+        </div>
+    </div>
+    
+    <input type="text" id="search-keylogs" placeholder="Search keylogs" onkeyup="searchKeylogs()">
+    <div id="search-results-keylogs"></div>
+    
     <div class="table-container">
         <table>
             <thead>

