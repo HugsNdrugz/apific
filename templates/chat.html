@@ -1,26 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat with {{ name }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
-</head>
-<body>
-    <div class="container">
-        <div class="chat-header">
-            <button onclick="window.location.href='/'" class="back-button">Back</button>            
-            <h1>{{ name }}</h1>
-        </div>
-        <ul class="message-list">
-            {% for message in messages %}
-            <li class="message {% if message.sender == 'You' %}outgoing{% else %}incoming{% endif %}">
-                <p class="message-text">{{ message.text }}</p>
-                <span class="message-time">{{ message.time }}</span>
-            </li>
-            {% endfor %}
-        </ul>
+{% extends "base.html" %}
+
+{% block title %}Chat with {{ name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="chat-header">
+        <button onclick="window.location.href='/'" class="back-button">Back</button>            
+        <h1>{{ name }}</h1>
     </div>
-</body>
-</html>
+    <ul class="message-list">
+        {% for message in messages %}
+        <li class="message {% if message.sender == 'You' %}outgoing{% else %}incoming{% endif %}">
+            <p class="message-text">{{ message.text }}</p>
+            <span class="message-time">{{ message.time }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
