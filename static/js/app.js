@@ -1,40 +1,40 @@
-// Initialize navigation and search functionality when the document is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    try {
-        // Initialize Feather icons
-        if (typeof feather !== 'undefined') {
-            feather.replace();
-        } else {
-            console.warn('Feather Icons not loaded');
-        }
 
-        // Initialize navigation
+// DOM Content Loaded Event Handler
+document.addEventListener('DOMContentLoaded', initializeApp);
+
+function initializeApp() {
+    try {
+        initializeFeatherIcons();
         initializeNavigation();
-        
-        // Initialize search
         initializeSearch();
     } catch (error) {
         console.error('Error initializing app:', error);
     }
-});
+}
 
-// Initialize navigation functionality
+function initializeFeatherIcons() {
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    } else {
+        console.warn('Feather Icons not loaded');
+    }
+}
+
 function initializeNavigation() {
     const navItems = document.querySelectorAll('.sidebar nav li');
     navItems.forEach(item => {
         item.addEventListener('click', () => {
-            // Update active state
-            navItems.forEach(li => li.classList.remove('active'));
-            item.classList.add('active');
-
-            // Show corresponding section
-            const sectionId = item.getAttribute('data-section');
-            showSection(sectionId);
+            updateActiveNavItem(item, navItems);
+            showSection(item.getAttribute('data-section'));
         });
     });
 }
 
-// Initialize search functionality
+function updateActiveNavItem(activeItem, allItems) {
+    allItems.forEach(item => item.classList.remove('active'));
+    activeItem.classList.add('active');
+}
+
 function initializeSearch() {
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
@@ -42,20 +42,18 @@ function initializeSearch() {
     }
 }
 
-// Show/hide sections
 function showSection(sectionId) {
     if (!sectionId) {
         console.warn('No section ID provided');
         return;
     }
 
-    // Hide all sections first
-    document.querySelectorAll('.section').forEach(section => {
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => {
         section.style.display = 'none';
         section.classList.remove('active');
     });
 
-    // Show the selected section
     const targetSection = document.getElementById(sectionId);
     if (targetSection) {
         targetSection.style.display = 'block';
@@ -65,7 +63,6 @@ function showSection(sectionId) {
     }
 }
 
-// Search messages functionality
 async function searchMessages() {
     const searchInput = document.getElementById('search-input');
     const searchResults = document.getElementById('search-results');
@@ -85,10 +82,8 @@ async function searchMessages() {
             body: `search_term=${encodeURIComponent(searchTerm)}`
         });
 
-        if (!response.ok) {
-            throw new Error('Search request failed');
-        }
-
+        if (!response.ok) throw new Error('Search request failed');
+        
         const results = await response.json();
         displaySearchResults(results);
     } catch (error) {
@@ -97,9 +92,9 @@ async function searchMessages() {
     }
 }
 
-// Display search results
 function displaySearchResults(results) {
     const searchResults = document.getElementById('search-results');
+    
     if (!results.length) {
         searchResults.innerHTML = '<p>No results found</p>';
         return;
@@ -115,80 +110,36 @@ function displaySearchResults(results) {
     searchResults.innerHTML = `<ul>${resultsList}</ul>`;
 }
 
-// Debounce utility function
 function debounce(func, wait) {
     let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
+    return function(...args) {
         clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+        timeout = setTimeout(() => func(...args), wait);
     };
 }
 
-// Generic fetch helper with error handling
-async function fetchContent(url) {
+// Content loading functions
+async function loadContent(url) {
     try {
         const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         return await response.text();
     } catch (error) {
         console.error(`Error fetching ${url}:`, error);
-        return `<p class="error-message">Error loading content. Please try again later.</p>`;
+        return '<p class="error-message">Error loading content. Please try again later.</p>';
     }
 }
 
-// Helper function to safely replace Feather icons
-function safeFeatherReplace() {
-    try {
-        if (typeof feather !== 'undefined') {
-            feather.replace();
-        }
-    } catch (error) {
-        console.warn('Error replacing Feather icons:', error);
-    }
-}
+const loadCalls = () => loadSectionContent('calls', '/calls');
+const loadKeylogs = () => loadSectionContent('keylogs', '/keylogs');
+const loadContacts = () => loadSectionContent('contacts', '/contacts');
+const loadChats = () => loadSectionContent('chats', '/');
 
-// Load calls
-async function loadCalls() {
-    const callsSection = document.getElementById('calls');
-    if (callsSection) {
-        const data = await fetchContent('/calls');
-        callsSection.innerHTML = data;
-        safeFeatherReplace();
-    }
-}
-
-// Load keylogs
-async function loadKeylogs() {
-    const keylogsSection = document.getElementById('keylogs');
-    if (keylogsSection) {
-        const data = await fetchContent('/keylogs');
-        keylogsSection.innerHTML = data;
-        safeFeatherReplace();
-    }
-}
-
-// Load contacts
-async function loadContacts() {
-    const contactsSection = document.getElementById('contacts');
-    if (contactsSection) {
-        const data = await fetchContent('/contacts');
-        contactsSection.innerHTML = data;
-        safeFeatherReplace();
-    }
-}
-
-// Load chats
-async function loadChats() {
-    const chatsSection = document.getElementById('chats');
-    if (chatsSection) {
-        const data = await fetchContent('/');
-        chatsSection.innerHTML = data;
-        safeFeatherReplace();
+async function loadSectionContent(sectionId, url) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        const content = await loadContent(url);
+        section.innerHTML = content;
+        initializeFeatherIcons();
     }
 }
