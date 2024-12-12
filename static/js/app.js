@@ -48,18 +48,24 @@ function showSection(sectionId) {
         return;
     }
 
-    const sections = document.querySelectorAll('.section');
-    sections.forEach(section => {
-        section.style.display = 'none';
-        section.classList.remove('active');
+    const mainContent = document.querySelector('.main-content');
+    if (!mainContent) {
+        console.warn('Main content container not found');
+        return;
+    }
+    
+    const sections = mainContent.children;
+    Array.from(sections).forEach(section => {
+        if (section.classList.contains('container')) {
+            section.style.display = 'none';
+        }
     });
 
-    const targetSection = document.getElementById(sectionId);
+    const targetSection = document.querySelector(`[data-section="${sectionId}"]`);
     if (targetSection) {
         targetSection.style.display = 'block';
-        targetSection.classList.add('active');
     } else {
-        console.warn(`Section with id "${sectionId}" not found`);
+        console.warn(`Section with data-section="${sectionId}" not found`);
     }
 }
 
