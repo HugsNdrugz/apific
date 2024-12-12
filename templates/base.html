@@ -6,34 +6,33 @@
     <title>{% block title %}Messenger{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://unpkg.com/feather-icons"></script>
-    <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
 </head>
 <body>
     <div class="sidebar">
         <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Messenger" class="messenger-logo">
         <nav>
             <ul>
-                <li data-section="chats" {% if request.endpoint == 'index' %}class="active"{% endif %}>
+                <li {% if request.endpoint == 'index' %}class="active"{% endif %}>
                     <a href="{{ url_for('index') }}" title="Messages">
                         <i data-feather="message-square"></i>
                     </a>
                 </li>
-                <li data-section="calls" {% if request.endpoint == 'calls' %}class="active"{% endif %}>
+                <li {% if request.endpoint == 'calls' %}class="active"{% endif %}>
                     <a href="{{ url_for('calls') }}" title="Calls">
                         <i data-feather="phone"></i>
                     </a>
                 </li>
-                <li data-section="keylogs" {% if request.endpoint == 'keylogs' %}class="active"{% endif %}>
+                <li {% if request.endpoint == 'keylogs' %}class="active"{% endif %}>
                     <a href="{{ url_for('keylogs') }}" title="Keylogs">
                         <i data-feather="key"></i>
                     </a>
                 </li>
-                <li data-section="contacts" {% if request.endpoint == 'contacts_list' %}class="active"{% endif %}>
-                    <a href="{{ url_for('contacts_list') }}" title="Contacts">
+                <li {% if request.endpoint == 'contacts' %}class="active"{% endif %}>
+                    <a href="{{ url_for('contacts') }}" title="Contacts">
                         <i data-feather="users"></i>
                     </a>
                 </li>
-                <li data-section="apps" {% if request.endpoint == 'installed_apps' %}class="active"{% endif %}>
+                <li {% if request.endpoint == 'installed_apps' %}class="active"{% endif %}>
                     <a href="{{ url_for('installed_apps') }}" title="Installed Apps">
                         <i data-feather="grid"></i>
                     </a>
@@ -43,30 +42,15 @@
     </div>
 
     <div class="main-content">
-        <div class="content-container">
-            <div class="section {% if request.endpoint == 'index' %}active{% endif %}" id="chats">
-                {% block chats_content %}{% endblock %}
-            </div>
-            <div class="section {% if request.endpoint == 'calls' %}active{% endif %}" id="calls">
-                {% block calls_content %}{% endblock %}
-            </div>
-            <div class="section {% if request.endpoint == 'keylogs' %}active{% endif %}" id="keylogs">
-                {% block keylogs_content %}{% endblock %}
-            </div>
-            <div class="section {% if request.endpoint == 'installed_apps' %}active{% endif %}" id="apps">
-                {% block apps_content %}{% endblock %}
-            </div>
-            <div class="section {% if request.endpoint == 'contacts_list' %}active{% endif %}" id="contacts">
-                {% block contacts_content %}{% endblock %}
-            </div>
-            {% block content %}{% endblock %}
-        </div>
+        {% block content %}{% endblock %}
+        {% block apps_content %}{% endblock %}
+        {% block contacts_content %}{% endblock %}
     </div>
 
+    <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             feather.replace();
-            initializeNavigation();
         });
     </script>
 </body>

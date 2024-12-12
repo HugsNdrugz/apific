@@ -76,6 +76,37 @@ def contacts():
         return render_template('contacts.html', contacts=contacts_data)
     return "Database connection error", 500
 
+@app.route('/sms/<name>')
+def sms(name):
+    conn = get_db_connection()
+    if conn:
+        try:
+            sms_messages = conn.execute(
+                'SELECT * FROM SMS WHERE from_to = ? ORDER BY time DESC',
+                (name,)
+            ).fetchall()
+            return render_template('sms.html', name=name, sms_messages=sms_messages)
+        except sqlite3.Error as e:
+            logging.error(f"Database error in sms route: {e}")
+            return "Database error", 500
+        finally:
+            conn.close()
+    return "Database connection error", 500
+
+@app.route('/installed_apps')
+def installed_apps():
+    conn = get_db_connection()
+    if conn:
+        try:
+            apps = conn.execute('SELECT * FROM InstalledApps ORDER BY application_name').fetchall()
+            return render_template('installed_apps.html', installed_apps=apps)
+        except sqlite3.Error as e:
+            logging.error(f"Database error in installed_apps: {e}")
+            return "Database error", 500
+        finally:
+            conn.close()
+    return "Database connection error", 500
+
 @app.route('/search', methods=['POST'])
 def search():
     search_term = request.form.get('search_term')

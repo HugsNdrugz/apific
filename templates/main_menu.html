@@ -2,7 +2,8 @@
 
 {% block title %}Chats{% endblock %}
 
-{% block chats_content %}
+{% block content %}
+<div class="chat-container">
     <div class="top-bar">
         <h1>Chats</h1>
         <div class="right-icons">
@@ -25,7 +26,7 @@
                         <a href="{{ url_for('chat', name=contact['name']) }}" class="action-link">
                             <i data-feather="message-square"></i>
                         </a>
-                        <a href="{{ url_for('sms_thread', name=contact['name']) }}" class="action-link">
+                        <a href="{{ url_for('sms', name=contact['name']) }}" class="action-link">
                             <i data-feather="message-circle"></i>
                         </a>
                     </div>

@@ -4,7 +4,12 @@
 
 {% block content %}
 <div class="container">
-    <h1>Installed Applications</h1>
+    <div class="top-bar">
+        <h1>Installed Applications</h1>
+        <div class="right-icons">
+            <i data-feather="refresh-cw" onclick="refreshData()"></i>
+        </div>
+    </div>
     <div class="table-container">
         <table>
             <thead>
