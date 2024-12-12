@@ -13,6 +13,10 @@ app = Flask(__name__,
            static_folder='static',
            static_url_path='/static')
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # Database configuration
 DATABASE = 'data.db'
 
@@ -35,12 +39,36 @@ def index():
     conn = get_db_connection()
     if conn:
         try:
+            # Fetch distinct contacts and their latest messages
             contacts = conn.execute('''
-                SELECT DISTINCT sender AS name FROM ChatMessages 
-                UNION SELECT DISTINCT from_to AS name FROM SMS
+                SELECT DISTINCT c.name,
+                    COALESCE(
+                        (SELECT text FROM ChatMessages 
+                         WHERE sender = c.name 
+                         ORDER BY time DESC LIMIT 1),
+                        (SELECT text FROM SMS 
+                         WHERE from_to = c.name 
+                         ORDER BY time DESC LIMIT 1)
+                    ) as last_message,
+                    COALESCE(
+                        (SELECT time FROM ChatMessages 
+                         WHERE sender = c.name 
+                         ORDER BY time DESC LIMIT 1),
+                        (SELECT time FROM SMS 
+                         WHERE from_to = c.name 
+                         ORDER BY time DESC LIMIT 1)
+                    ) as time
+                FROM (
+                    SELECT DISTINCT sender as name FROM ChatMessages 
+                    UNION 
+                    SELECT DISTINCT from_to FROM SMS
+                ) c
             ''').fetchall()
+            
+            # Convert Row objects to dictionaries
+            contacts_list = [dict(contact) for contact in contacts]
             conn.close()
-            return render_template('main_menu.html', contacts=contacts)
+            return render_template('main_menu.html', contacts=contacts_list)
         except sqlite3.Error as e:
             logger.error(f"Database error: {e}")
             return "Error fetching contacts", 500

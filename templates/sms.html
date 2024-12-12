@@ -3,15 +3,27 @@
 {% block title %}SMS with {{ name }}{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>SMS with {{ name }}</h1>
-    <ul class="message-list">
-        {% for sms in sms_messages %}
-        <li class="message {% if sms.sms_type == 'sent' %}outgoing{% else %}incoming{% endif %}">
-            <p class="message-text">{{ sms.text }}</p>
-            <span class="message-time">{{ sms.time }}</span>
-        </li>
-        {% endfor %}
-    </ul>
+<div class="section active" id="messages">
+    <div class="top-bar">
+        <div class="left-icons">
+            <a href="{{ url_for('index') }}" class="back-link">
+                <i data-feather="arrow-left"></i>
+            </a>
+        </div>
+        <h1>SMS with {{ name }}</h1>
+    </div>
+
+    <div class="messages-container">
+        <ul class="message-list">
+            {% for sms in sms_messages %}
+            <li class="message {% if sms.sms_type == 'sent' %}outgoing{% else %}incoming{% endif %}">
+                <div class="message-content">
+                    <p class="message-text">{{ sms.text }}</p>
+                    <span class="message-time">{{ sms.time }}</span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 {% endblock %}

@@ -3,18 +3,27 @@
 {% block title %}Chat with {{ name }}{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="chat-header">
-        <button onclick="window.location.href='/'" class="back-button">Back</button>            
-        <h1>{{ name }}</h1>
+<div class="section active" id="messages">
+    <div class="top-bar">
+        <div class="left-icons">
+            <a href="{{ url_for('index') }}" class="back-link">
+                <i data-feather="arrow-left"></i>
+            </a>
+        </div>
+        <h1>Chat with {{ name }}</h1>
     </div>
-    <ul class="message-list">
-        {% for message in messages %}
-        <li class="message {% if message.sender == 'You' %}outgoing{% else %}incoming{% endif %}">
-            <p class="message-text">{{ message.text }}</p>
-            <span class="message-time">{{ message.time }}</span>
-        </li>
-        {% endfor %}
-    </ul>
+
+    <div class="messages-container">
+        <ul class="message-list">
+            {% for message in messages %}
+            <li class="message {% if message.sender == 'You' %}outgoing{% else %}incoming{% endif %}">
+                <div class="message-content">
+                    <p class="message-text">{{ message.text }}</p>
+                    <span class="message-time">{{ message.time }}</span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 {% endblock %}
