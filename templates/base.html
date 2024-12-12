@@ -35,6 +35,12 @@
                         <span>Contacts</span>
                     </a>
                 </li>
+                <li {% if request.endpoint == 'installed_apps' %}class="active"{% endif %}>
+                    <a href="{{ url_for('installed_apps') }}">
+                        <i data-feather="grid"></i>
+                        <span>Apps</span>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>
